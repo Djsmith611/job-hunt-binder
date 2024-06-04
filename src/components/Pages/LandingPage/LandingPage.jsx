@@ -1,8 +1,7 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
 import { Box, Typography } from "@mui/material";
-import ParallaxButton from "../Button/ParallaxButton";
+import ParallaxButton from "../../Util/Buttons/ParallaxButton/ParallaxButton";
 
 export default function LandingPage() {
   const navigate = useNavigate();
