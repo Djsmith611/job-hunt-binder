@@ -83,6 +83,7 @@ export const unsetUser = () => ({
   type: UNSET_USER,
 });
 
-export const unsetUserError = () => ({
+export const unsetUserError = (error) => ({
   type: UNSET_USER_ERROR,
+  payload: error,
 });
