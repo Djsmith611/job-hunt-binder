@@ -1,4 +1,3 @@
-import { call, put, takeLatest } from "redux-saga/effects";
 import axios from "axios";
 import {
   unsetUser,
@@ -10,6 +9,7 @@ import {
   LOGOUT_REQUEST,
   fetchUserRequest,
 } from "../../modules/actions/loginActions";
+import { call, put, takeLatest } from "redux-saga/effects";
 import { fetchLeadsRequest } from "../../modules/actions/leadActions";
 
 const config = {
@@ -38,7 +38,8 @@ function* logoutUser(action) {
     yield call(axios.post, "/api/user/logout", config);
     yield put(unsetUser());
   } catch (error) {
-    yield put(unsetUserError(error.message));
+    const message = error.message;
+    yield put(unsetUserError(message));
   }
 }
 

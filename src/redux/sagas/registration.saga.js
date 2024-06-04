@@ -1,29 +1,23 @@
-import { put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest } from 'redux-saga/effects';
+import { loginRequest } from '../../modules/actions/loginActions';
+import { REGISTER_USER_REQUEST, registerUserFailure, setToLoginMode, clearRegistrationError } from '../../modules/actions/registrationActions';
+
 import axios from 'axios';
 
 // worker Saga: will be fired on "REGISTER" actions
 function* registerUser(action) {
+  const user = action.payload;
   try {
-    // clear any existing error on the registration page
-    yield put({ type: 'CLEAR_REGISTRATION_ERROR' });
-
-    // passes the username and password from the payload to the server
-    yield axios.post('/api/user/register', action.payload);
-
-    // automatically log a user in after registration
-    yield put({ type: 'LOGIN', payload: action.payload });
-
-    // set to 'login' mode so they see the login screen
-    // after registration or after they log out
-    yield put({ type: 'SET_TO_LOGIN_MODE' });
+    yield put(clearRegistrationError());
+    yield call(axios.post, "/api/user/register", user);
+    yield put(loginRequest({email: user.email, password: user.password}));
+    yield put(setToLoginMode());
   } catch (error) {
-    console.log('Error with user registration:', error);
-    yield put({ type: 'REGISTRATION_FAILED' });
+    const message = error.message;
+    yield put(registerUserFailure(message));
   }
 }
 
-function* registrationSaga() {
-  yield takeLatest('REGISTER', registerUser);
+export default function* registrationSaga() {
+  yield takeLatest(REGISTER_USER_REQUEST, registerUser);
 }
-
-export default registrationSaga;
