@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 
 const useLeads = () => {
-    return useSelector(state => state.leads);
+  return useSelector((state) => state.leads);
 };
 
-export default useLead;
+export default useLeads;
