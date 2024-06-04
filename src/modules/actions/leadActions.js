@@ -149,7 +149,7 @@ export const updateLeadFailure = (error) => ({
   payload: error,
 });
 
-/********************** BATCH UPDATE **************************/
+/********************** BATCH UPDATE *************************/
 export const batchUpdateRequest = (leadIds, statusId) => ({
   type: BATCH_UPDATE_REQUEST,
   payload: {
