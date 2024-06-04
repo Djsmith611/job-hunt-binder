@@ -1,0 +1,41 @@
+.parallax-button-container {
+    border: solid black 1px;
+    height: 25px;
+    width: 85px;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .parallax-button-inner {
+    border: solid black 1px;
+    height: 25px;
+    width: 85px;
+    margin-left: 5px;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .parallax-button {
+    border: none;
+    background: none;
+    margin-top: 2px;
+    margin-left: 2px;
+    color: black;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .parallax-button-container:hover {
+      transform: translate(-3px, -3px);
+  }
+  .parallax-button-container:hover > div > button{
+    color: white;
+  }
+  
+  .parallax-button-container:hover > div {
+    transform: translate(6px, 6px);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    background-color: rgb(255, 0, 0);
+  }
+  

@@ -1,7 +1,9 @@
-import'./FolderButton.css';
+import "./FolderButton.css";
 
-export default function FolderButton({type, text, clickFunction}) {
+export default function FolderButton({ type, text, clickFunction }) {
   return (
-    <button type={type} className='button' onClick={clickFunction}>{text}</button>
-  )
+    <button type={type} className="button" onClick={clickFunction}>
+      {text}
+    </button>
+  );
 }

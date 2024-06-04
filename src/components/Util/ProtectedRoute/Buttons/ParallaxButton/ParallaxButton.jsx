@@ -1,4 +1,4 @@
-import './ParallaxButton.css';
+import "./ParallaxButton.css";
 
 export default function ParallaxButton({ type, text, onClickFunction }) {
   return (
