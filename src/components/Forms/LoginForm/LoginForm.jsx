@@ -1,66 +1,72 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import {useSelector} from 'react-redux';
+import { useState } from "react";
+import useLogin from "../../../modules/hooks/useLogin";
+import useMessage from "../../../modules/hooks/useMessage";
+import useLoginInputError from "../../../modules/hooks/useLoginInputError";
+import FolderButton from "../../Util/Buttons/FolderButton/FolderButton";
+import { TextField, Typography } from "@mui/material";
 
-function LoginForm() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const errors = useSelector(store => store.errors);
-  const dispatch = useDispatch();
+export default function LoginForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const login = useLogin();
+  const inputError = useLoginInputError();
+  const loginMessage = useMessage('login');
 
-  const login = (event) => {
+  const handleLogin = (event) => {
     event.preventDefault();
 
-    if (username && password) {
-      dispatch({
-        type: 'LOGIN',
-        payload: {
-          username: username,
-          password: password,
-        },
-      });
+    if (email && password) {
+      login({ email, password });
     } else {
-      dispatch({ type: 'LOGIN_INPUT_ERROR' });
+      inputError();
     }
   }; // end login
 
   return (
-    <form className="formPanel" onSubmit={login}>
-      <h2>Login</h2>
-      {errors.loginMessage && (
+    <form className="formPanel" onSubmit={handleLogin}>
+      <Typography variant="h5" element="h2" style={{ textAlign: "center" }}>
+        Welcome back!
+      </Typography>
+      {loginMessage && (
         <h3 className="alert" role="alert">
-          {errors.loginMessage}
+          {loginMessage}
         </h3>
       )}
-      <div>
-        <label htmlFor="username">
-          Username:
-          <input
-            type="text"
-            name="username"
-            required
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
+      <div
+        style={{
+          display: "flex",
+          marginBottom: 10,
+          marginTop: 10,
+        }}
+      >
+        <TextField
+          variant="filled"
+          value={email}
+          label="Email"
+          onChange={(event) => setEmail(event.target.value)}
+          sx={{ backgroundColor: "white", margin: "auto" }}
+          required
+        />
       </div>
-      <div>
-        <label htmlFor="password">
-          Password:
-          <input
-            type="password"
-            name="password"
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
+      <div
+        style={{
+          display: "flex",
+          marginBottom: 10,
+          marginTop: 10,
+        }}
+      >
+        <TextField
+          variant="filled"
+          value={password}
+          label="Password"
+          onChange={(event) => setPassword(event.target.value)}
+          sx={{ backgroundColor: "white", margin: "auto" }}
+          required
+        />
       </div>
-      <div>
-        <input className="btn" type="submit" name="submit" value="Log In" />
+      <div style={{ display: "flex", marginTop: 5 }}>
+        <FolderButton type="submit" text="Log In" />
       </div>
     </form>
   );
 }
-
-export default LoginForm;
