@@ -245,4 +245,23 @@ router.put("/:id", rejectUnauthenticated, (req, res) => {
     });
 }); /* END */
 
+router.delete("/:id", rejectUnauthenticated, (req, res) => {
+    const userId = req.user.id;
+    const leadId = req.params.id
+    const queryText = `
+        DELETE FROM "leads"
+        WHERE "id" = $1 AND "user_id" = $2;
+    `; // need to delete s3 docs as well
+
+    pool
+        .query(queryText, [leadId, userId])
+        .then((result) => {
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.log(error);
+            res.sendStatus(500)
+        })
+});
+
 module.exports = router;
