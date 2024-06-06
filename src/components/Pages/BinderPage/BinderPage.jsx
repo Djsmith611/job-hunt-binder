@@ -27,7 +27,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useState, useEffect, useMemo } from "react";
 import useLeads from "../../../modules/hooks/useLeads";
-import EnhancedTableHead from "../EnhancedTableHead/EnhancedTableHead";
+import EnhancedTableHead from "../../";
 import EnhancedTableToolbar from "../EnhancedTableToolbar/EnhancedTableToolbar";
 
 // Utility function for stable sorting
