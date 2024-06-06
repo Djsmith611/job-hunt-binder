@@ -245,6 +245,26 @@ router.put("/:id", rejectUnauthenticated, (req, res) => {
     });
 }); /* END */
 
+router.put("/status/:id", rejectUnauthenticated, (req, res) => {
+    const leadId = req.body.leadId;
+    const statusId = req.body.statusId;
+    const queryText = `
+        UPDATE "leads"
+        SET "status_id" = $1
+        WHERE "id" = $2;
+    `;
+
+    pool
+        .query(queryText, [statusId, leadId])
+        .then((result) => {
+            res.sendStatus(200);
+        })
+        .catch((error) => {
+            console.log(error);
+            res.sendStatus(500);
+        })
+})
+
 router.delete("/:id", rejectUnauthenticated, (req, res) => {
     const userId = req.user.id;
     const leadId = req.params.id

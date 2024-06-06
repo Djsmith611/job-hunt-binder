@@ -19,16 +19,17 @@ import EditForm from "../../Forms/EditForm/EditForm";
 import NewLeadForm from "../../Forms/";
 import { useDispatch } from "react-redux";
 import {
-  submitLeadRetrieval,
+  fetchLeadsRequest,
   addLeadRequest,
   updateLeadRequest,
   batchUpdateRequest,
+  updateStatusRequest,
 } from "../../../modules/actions/leadActions";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState, useEffect, useMemo } from "react";
 import useLeads from "../../../modules/hooks/useLeads";
-import EnhancedTableHead from "../../";
-import EnhancedTableToolbar from "../EnhancedTableToolbar/EnhancedTableToolbar";
+import EnhancedTableHead from "./EnhancedTableHead/EnhancedTableHead";
+import EnhancedTableToolbar from "./EnhancedTableToolbar/EnhancedTableToolbar";
 
 // Utility function for stable sorting
 const stableSort = (array, comparator) => {
@@ -87,10 +88,10 @@ export default function Binder() {
   // State variables for modals and forms
   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [newLead, setNewLead] = useState(initialState);
-  const [addlParams, setAddlParams] = useState(addlInitialState);
-  const [leadToEdit, setLeadToEdit] = useState({});
-  const [isDocumentUpload, setIsDocumentUpload] = useState(false);
+  // const [newLead, setNewLead] = useState(initialState);
+  // const [addlParams, setAddlParams] = useState(addlInitialState);
+  // const [leadToEdit, setLeadToEdit] = useState({});
+  // const [isDocumentUpload, setIsDocumentUpload] = useState(false);
 
   // Handle sorting request
   const handleRequestSort = (event, property) => {
@@ -148,31 +149,37 @@ export default function Binder() {
   // Check if a row is selected
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  // Handle status edit for a row
-  const handleStatusEdit = async (id, value) => {
-    const leadToUpdate = rowsData.find((row) => row.id === id);
-    const leadWithIds = {
-      id: leadToUpdate.id,
-      status: await statusOptions.find((status) => status.name === value)?.id,
-      title: await titlesOptions.find(
-        (title) => title.name === leadToUpdate.title
-      )?.id,
-      field: await fieldsOptions.find(
-        (field) => field.name === leadToUpdate.field
-      )?.id,
-      company: await companiesOptions.find(
-        (company) => company.name === leadToUpdate.company
-      )?.id,
-      location: await locationsOptions.find(
-        (location) => location.name === leadToUpdate.location
-      )?.id,
-      type: await typesOptions.find((type) => type.name === leadToUpdate.type)
-        ?.id,
-      notes: leadToUpdate.notes,
-      description: leadToUpdate.description,
-    };
-    dispatch(updateLeadRequest(leadWithIds));
+  // Handle status edit for a row ***
+  const handleStatusEdit = (leadId, statusId) => {
+    dispatch(updateStatusRequest(leadId, statusId));
   };
+
+  
+
+  // const handleStatusEdit = async (id, value) => {
+  //   const leadToUpdate = rowsData.find((row) => row.id === id);
+  //   const leadWithIds = {
+  //     id: leadToUpdate.id,
+  //     status: await statusOptions.find((status) => status.name === value)?.id,
+  //     title: await titlesOptions.find(
+  //       (title) => title.name === leadToUpdate.title
+  //     )?.id,
+  //     field: await fieldsOptions.find(
+  //       (field) => field.name === leadToUpdate.field
+  //     )?.id,
+  //     company: await companiesOptions.find(
+  //       (company) => company.name === leadToUpdate.company
+  //     )?.id,
+  //     location: await locationsOptions.find(
+  //       (location) => location.name === leadToUpdate.location
+  //     )?.id,
+  //     type: await typesOptions.find((type) => type.name === leadToUpdate.type)
+  //       ?.id,
+  //     notes: leadToUpdate.notes,
+  //     description: leadToUpdate.description,
+  //   };
+  //   dispatch(updateLeadRequest(leadWithIds));
+  // };
 
   // Handle batch status change
   const handleBatchStatusChange = (newStatus) => {
