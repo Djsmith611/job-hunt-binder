@@ -56,7 +56,7 @@ export default function Dashboard() {
     // Fetch applications per day data from the backend
     const fetchApplicationsPerDay = async () => {
       try {
-        const response = await axios.get("/api/leads/tracker", {
+        const response = await axios.get("/api/data/tracker", {
           params: {
             startDay: getSunday(), // Function to get the date of the last Sunday
             endDay: getSaturday(), // Function to get the date of the upcoming Saturday

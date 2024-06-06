@@ -16,7 +16,7 @@ import {
   IconButton,
 } from "@mui/material";
 import EditForm from "../../Forms/EditForm/EditForm";
-import NewLeadForm from "../../Forms/";
+import NewLeadForm from "../../Forms/NewLeadForm/NewLeadForm";
 import { useDispatch } from "react-redux";
 import {
   fetchLeadsRequest,
@@ -62,7 +62,7 @@ export default function Binder() {
 
   // Fetch leads data on component mount
   useEffect(() => {
-    dispatch(submitLeadRetrieval());
+    dispatch(fetchLeadsRequest());
   }, [dispatch]);
 
   // Fetch leads and their options
@@ -154,36 +154,9 @@ export default function Binder() {
     dispatch(updateStatusRequest(leadId, statusId));
   };
 
-  
-
-  // const handleStatusEdit = async (id, value) => {
-  //   const leadToUpdate = rowsData.find((row) => row.id === id);
-  //   const leadWithIds = {
-  //     id: leadToUpdate.id,
-  //     status: await statusOptions.find((status) => status.name === value)?.id,
-  //     title: await titlesOptions.find(
-  //       (title) => title.name === leadToUpdate.title
-  //     )?.id,
-  //     field: await fieldsOptions.find(
-  //       (field) => field.name === leadToUpdate.field
-  //     )?.id,
-  //     company: await companiesOptions.find(
-  //       (company) => company.name === leadToUpdate.company
-  //     )?.id,
-  //     location: await locationsOptions.find(
-  //       (location) => location.name === leadToUpdate.location
-  //     )?.id,
-  //     type: await typesOptions.find((type) => type.name === leadToUpdate.type)
-  //       ?.id,
-  //     notes: leadToUpdate.notes,
-  //     description: leadToUpdate.description,
-  //   };
-  //   dispatch(updateLeadRequest(leadWithIds));
-  // };
-
   // Handle batch status change
-  const handleBatchStatusChange = (newStatus) => {
-    dispatch(batchUpdateRequest(newStatus, selected));
+  const handleBatchStatusChange = (statusId) => {
+    dispatch(batchUpdateRequest(statusId, selected));
     setSelected([]);
   };
 
@@ -209,12 +182,6 @@ export default function Binder() {
   const closeEdit = () => {
     setIsEdit(false);
     setLeadToEdit({});
-  };
-
-  // Handle submit of the new lead form
-  const handleSubmit = () => {
-    dispatch(addLeadRequest(newLead, addlParams));
-    handleClose();
   };
 
   // Calculate empty rows

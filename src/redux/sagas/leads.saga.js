@@ -94,6 +94,7 @@ function* addLead(action) {
   }
 }
 
+/*************** BATCH UPDATE *****************/
 function* batchUpdate(action) {
   const leadIds = action.payload.leadIds;
   const statusId = action.payload.statusId;
@@ -106,6 +107,7 @@ function* batchUpdate(action) {
   }
 }
 
+/************** UPDATE LEAD STATUS ************/
 function* updateLeadStatus(action) {
   const leadId = parseInt(action.payload.leadId);
   const statusId = parseInt(action.payload.statusId);

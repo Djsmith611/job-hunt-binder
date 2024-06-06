@@ -1,5 +1,5 @@
 import "./Footer.css";
-import FolderButton from "../Button/FolderButton";
+import FolderButton from "../../Util/Buttons/FolderButton/FolderButton";
 import { TextField } from "@mui/material";
 
 export default function Footer() {

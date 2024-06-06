@@ -7,7 +7,7 @@ import {
 import {
   CLEAR_REGISTRATION_ERROR,
   REGISTRATION_INPUT_ERROR,
-  REGISTRATION_FAILURE,
+  REGISTER_USER_FAILURE,
 } from "../../modules/actions/registrationActions";
 import { combineReducers } from "redux";
 
@@ -38,7 +38,7 @@ const registrationMessage = (state = initialState, action) => {
       return initialState;
     case REGISTRATION_INPUT_ERROR:
       return "Please fill required fields!";
-    case REGISTRATION_FAILURE:
+    case REGISTER_USER_FAILURE:
       return "Oops! That didn't work. Try again!";
     default:
       return state;

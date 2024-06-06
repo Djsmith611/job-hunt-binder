@@ -150,11 +150,11 @@ export const updateLeadFailure = (error) => ({
 });
 
 /********************** BATCH UPDATE *************************/
-export const batchUpdateRequest = (leadIds, statusId) => ({
+export const batchUpdateRequest = (statusId, leadIds)  => ({
   type: BATCH_UPDATE_REQUEST,
   payload: {
-    leadIds: leadIds,
     statusId: statusId,
+    leadIds: leadIds,
   },
 });
 

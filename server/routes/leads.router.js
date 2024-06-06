@@ -245,6 +245,7 @@ router.put("/:id", rejectUnauthenticated, (req, res) => {
     });
 }); /* END */
 
+/****************** UPDATE USER LEAD STATUS *******************/
 router.put("/status/:id", rejectUnauthenticated, (req, res) => {
     const leadId = req.body.leadId;
     const statusId = req.body.statusId;
@@ -265,6 +266,7 @@ router.put("/status/:id", rejectUnauthenticated, (req, res) => {
         })
 })
 
+/****************** DELETE USER LEAD *******************/
 router.delete("/:id", rejectUnauthenticated, (req, res) => {
     const userId = req.user.id;
     const leadId = req.params.id
