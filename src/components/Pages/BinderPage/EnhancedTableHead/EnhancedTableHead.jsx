@@ -1,12 +1,12 @@
 import {
-    Box,
-    TableCell,
-    TableHead,
-    TableRow,
-    TableSortLabel,
-    Checkbox,
-    IconButton,
-    Tooltip,
+  Box,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Checkbox,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { visuallyHidden } from "@mui/utils";

@@ -1,4 +1,5 @@
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -14,22 +15,25 @@ import {
   MenuItem,
   Tooltip,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import EditForm from "../../Forms/EditForm/EditForm";
 import NewLeadForm from "../../Forms/NewLeadForm/NewLeadForm";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchLeadsRequest,
-  addLeadRequest,
-  updateLeadRequest,
-  batchUpdateRequest,
   updateStatusRequest,
+  batchUpdateRequest,
+  deleteLeadsRequest,
 } from "../../../modules/actions/leadActions";
 import EditIcon from "@mui/icons-material/Edit";
 import { useState, useEffect, useMemo } from "react";
-import useLeads from "../../../modules/hooks/useLeads";
 import EnhancedTableHead from "./EnhancedTableHead/EnhancedTableHead";
 import EnhancedTableToolbar from "./EnhancedTableToolbar/EnhancedTableToolbar";
+import useLeads from "../../../modules/hooks/useLeads";
+import useLeadLoad from "../../../modules/hooks/useLeadLoad";
+import useData from "../../../modules/hooks/useData";
+import "./BinderPage.css";
 
 // Utility function for stable sorting
 const stableSort = (array, comparator) => {
@@ -57,7 +61,7 @@ const descendingComparator = (a, b, orderBy) => {
 };
 
 // Main component for managing leads
-export default function Binder() {
+export default function BinderPage() {
   const dispatch = useDispatch();
 
   // Fetch leads data on component mount
@@ -66,16 +70,22 @@ export default function Binder() {
   }, [dispatch]);
 
   // Fetch leads and their options
+  const data = useData();
   const leads = useLeads();
+  const leadLoad = useLeadLoad();
+
+
   const {
-    statuses: statusOptions,
-    companies: companiesOptions,
-    locations: locationsOptions,
-    titles: titlesOptions,
-    types: typesOptions,
-    fields: fieldsOptions,
-    leads: rowsData,
-  } = leads.pop;
+    statuses: statusOptions = [],
+    companies: companiesOptions = [],
+    locations: locationsOptions = [],
+    titles: titlesOptions = [],
+    types: typesOptions = [],
+    fields: fieldsOptions = [],
+  } = data;
+
+  // const { loading, error } = leadLoad;
+  const rowsData = leads;
 
   // State variables for table and pagination
   const [order, setOrder] = useState("asc");
@@ -88,10 +98,7 @@ export default function Binder() {
   // State variables for modals and forms
   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  // const [newLead, setNewLead] = useState(initialState);
-  // const [addlParams, setAddlParams] = useState(addlInitialState);
-  // const [leadToEdit, setLeadToEdit] = useState({});
-  // const [isDocumentUpload, setIsDocumentUpload] = useState(false);
+  const [leadToEdit, setLeadToEdit] = useState({});
 
   // Handle sorting request
   const handleRequestSort = (event, property) => {
@@ -101,13 +108,16 @@ export default function Binder() {
   };
 
   // Handle select all rows
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+
+  const handleSelectAllClick = () => {
+    if (selectAllChecked) {
+      setSelected([]);
+    } else {      
       const newSelected = visibleRows.map((n) => n.id);
       setSelected(newSelected);
-      return;
     }
-    setSelected([]);
+    setSelectAllChecked(!selectAllChecked);
   };
 
   // Handle row click for selection
@@ -149,8 +159,9 @@ export default function Binder() {
   // Check if a row is selected
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  // Handle status edit for a row ***
-  const handleStatusEdit = (leadId, statusId) => {
+  // Handle status edit for a row
+  const handleStatusEdit = async (leadId, statusName) => {
+    const statusId = await statusOptions.find(option => option.name === statusName)?.id;
     dispatch(updateStatusRequest(leadId, statusId));
   };
 
@@ -160,6 +171,10 @@ export default function Binder() {
     setSelected([]);
   };
 
+  const deleteSelected = () => {
+    dispatch(deleteLeadsRequest(selected));
+  };
+
   // Handle add new lead click
   const handleAddNewClick = () => {
     setOpen(true);
@@ -167,8 +182,6 @@ export default function Binder() {
 
   // Handle close of the new lead form
   const handleClose = () => {
-    setNewLead(initialState);
-    setAddlParams(addlInitialState);
     setOpen(false);
   };
 
@@ -198,6 +211,24 @@ export default function Binder() {
     [order, orderBy, page, rowsPerPage, rowsData]
   );
 
+  // if (loading) {
+  //   return (
+  //     <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+  //       <CircularProgress />
+  //     </Box>
+  //   );
+  // }
+
+  // if (error) {
+  //   return (
+  //     <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+  //       <Typography variant="h6" color="error">
+  //         {error}
+  //       </Typography>
+  //     </Box>
+  //   );
+  // }
+
   return (
     <div className="container">
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -205,6 +236,8 @@ export default function Binder() {
           numSelected={selected.length}
           handleBatchStatusChange={handleBatchStatusChange}
           statusOptions={statusOptions}
+
+          deleteSelected={deleteSelected}
         />
         <TableContainer>
           <Table
@@ -245,6 +278,7 @@ export default function Binder() {
                       <Select
                         value={row.status}
                         variant="standard"
+                        margin={dense? "dense" : "none"}
                         onChange={(event) =>
                           handleStatusEdit(row.id, event.target.value)
                         }
@@ -315,14 +349,10 @@ export default function Binder() {
         open={open}
         onClick={handleClose}
       >
-        <NewLeadForm
-            setOpen={setOpen}
-        />
+        <NewLeadForm setOpen={setOpen} />
       </Backdrop>
       <Backdrop open={isEdit} onClick={closeEdit}>
-        <EditForm
-          closeEdit={closeEdit}
-        />
+        <EditForm setIsEdit={setIsEdit} lead={leadToEdit} />
       </Backdrop>
     </div>
   );

@@ -37,6 +37,11 @@ export const BATCH_UPDATE_REQUEST = "BATCH_UPDATE_REQUEST";
 export const BATCH_UPDATE_SUCCESS = "BATCH_UPDATE_SUCCESS";
 export const BATCH_UPDATE_FAILURE = "BATCH_UPDATE_FAILURE";
 
+/********************** DELETE LEADS **************************/
+export const DELETE_LEADS_REQUEST = "DELETE_LEADS_REQUEST";
+export const DELETE_LEADS_SUCCESS = "DELETE_LEADS_SUCCESS";
+export const DELETE_LEADS_FAILURE = "DELETE_LEADS_FAILURE";
+
 /********************** SET DATA **************************/
 export const setStatuses = (statuses) => ({
   type: SET_STATUSES,
@@ -166,3 +171,20 @@ export const batchUpdateFailure = (error) => ({
   type: BATCH_UPDATE_FAILURE,
   payload: error,
 });
+
+/********************** DELETE LEADS **************************/
+export const deleteLeadsRequest = (leadIds) => ({
+  type: DELETE_LEADS_REQUEST,
+  payload: {
+    leadIds:leadIds,
+  },
+});
+
+export const deleteLeadsSuccess = () => ({
+  type: DELETE_LEADS_SUCCESS,
+});
+
+export const deleteLeadsFailure = (error) => ({
+  type: DELETE_LEADS_FAILURE,
+  payload: error,
+})

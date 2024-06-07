@@ -88,7 +88,7 @@ router.post("/", rejectUnauthenticated, (req, res) => {
 /************** BATCH UPDATE USER LEAD STATUS *******/
 router.put("/batch", rejectUnauthenticated, (req, res) => {
   console.log(req.body);
-  const status = req.body.statusToAdd; // Pulling status from req.body
+  const status = req.body.statusId; // Pulling status from req.body
   const leadIds = req.body.leadIds; // Pulling all ids from req.body
   const today = new Date();
   const localDate = new Date(
@@ -247,17 +247,49 @@ router.put("/:id", rejectUnauthenticated, (req, res) => {
 
 /****************** UPDATE USER LEAD STATUS *******************/
 router.put("/status/:id", rejectUnauthenticated, (req, res) => {
-    const leadId = req.body.leadId;
-    const statusId = req.body.statusId;
-    const queryText = `
+  console.log('changing status, req.body:', req.body);
+    const leadId = parseInt(req.params.id);
+    const status = req.body.statusId;
+    const today = new Date();
+    const localDate = new Date(
+      today.getTime() - today.getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .split("T")[0]; // Getting only the date
+    let queryText = ``;
+    let queryValues = []; // Setting query values in order
+
+
+    if (status === 2) {
+      queryText = `
+        UPDATE "leads"
+        SET "status_id" = $1, "app_date" = $2
+        WHERE "id" = $3;
+      `;
+      queryValues = [status, localDate, leadId];
+    } else if (status === 1) {
+      queryText = `
+        UPDATE "leads"
+        SET "status_id" = $1, "app_date" = NULL
+        WHERE "id" = $2;
+      `;
+      queryValues = [status, leadId];
+    } else {
+      queryText = `
         UPDATE "leads"
         SET "status_id" = $1
         WHERE "id" = $2;
-    `;
+      `;
+      queryValues = [status, leadId];
+    }
+
+    console.log('queryText:', queryText);
+    console.log('queryValues:', queryValues);
 
     pool
-        .query(queryText, [statusId, leadId])
+        .query(queryText, queryValues)
         .then((result) => {
+          console.log('change successful')
             res.sendStatus(200);
         })
         .catch((error) => {
@@ -267,16 +299,18 @@ router.put("/status/:id", rejectUnauthenticated, (req, res) => {
 })
 
 /****************** DELETE USER LEAD *******************/
-router.delete("/:id", rejectUnauthenticated, (req, res) => {
+router.delete("/delete", rejectUnauthenticated, (req, res) => {
     const userId = req.user.id;
-    const leadId = req.params.id
+    const leadIds = req.body.leadIds;
+    console.log('req.body:', req.body);
+    console.log('leadIds:', leadIds);
     const queryText = `
         DELETE FROM "leads"
-        WHERE "id" = $1 AND "user_id" = $2;
+        WHERE "id" = ANY($1::int[]) AND "user_id" = $2;
     `; // need to delete s3 docs as well
 
     pool
-        .query(queryText, [leadId, userId])
+        .query(queryText, [leadIds, userId])
         .then((result) => {
             res.sendStatus(200);
         })

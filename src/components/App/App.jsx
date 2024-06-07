@@ -13,7 +13,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Footer from "./Footer/Footer";
 import { useDispatch } from "react-redux";
-import BinderPage from "../Pages/BinderPage/BinderPage";
+import BinderPage from "../Pages/BinderPage/BinderPage.jsx";
 import AboutPage from "../Pages/AboutPage/AboutPage";
 import DashboardPage from "../Pages/DashboardPage/DashboardPage";
 import useUser from "../../modules/hooks/useUser";

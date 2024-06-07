@@ -8,6 +8,7 @@ import {
   UPDATE_STATUS_REQUEST,
   fetchDataFailure,
   fetchDataRequest,
+  fetchLeadsSuccess,
   fetchLeadsFailure,
   fetchLeadsRequest,
   setCompanies,
@@ -17,12 +18,15 @@ import {
   setStatuses,
   setTitles,
   setTypes,
+  DELETE_LEADS_REQUEST,
 } from "../../modules/actions/leadActions";
+import axios from "axios";
 
 function* fetchLeads(action) {
   try {
     const leadsResponse = yield call(axios.get, "/api/leads");
     yield put(setLeads(leadsResponse.data));
+    yield put(fetchLeadsSuccess());
     yield put(fetchDataRequest());
   } catch (error) {
     console.error(error);
@@ -94,13 +98,13 @@ function* addLead(action) {
   }
 }
 
-/*************** BATCH UPDATE *****************/
+/*************** BATCH UPDATE STATUS *****************/
 function* batchUpdate(action) {
   const leadIds = action.payload.leadIds;
   const statusId = action.payload.statusId;
-  const body = { leadIds, statusId };
+  const body = { leadIds:leadIds, statusId:statusId };
   try {
-    yield call(axios.put, "/api/leads", body);
+    yield call(axios.put, "/api/leads/batch", body);
     yield put(fetchLeadsRequest());
   } catch (error) {
     console.error(error);
@@ -112,13 +116,13 @@ function* updateLeadStatus(action) {
   const leadId = parseInt(action.payload.leadId);
   const statusId = parseInt(action.payload.statusId);
   try {
-    yield call(axios.put, `/api/leads/status/${leadId}`, statusId);
+    yield call(axios.put, `/api/leads/status/${leadId}`, {statusId: statusId});
     yield put(fetchLeadsRequest());
   } catch (error) {
     console.error(error);
   }
 }
-
+/************** UPDATE LEAD ************/
 function* updateLead(action) {
   const leadId = parseInt(action.payload.leadId);
   const lead = action.payload.lead;
@@ -154,6 +158,19 @@ function* updateLead(action) {
   }
 }
 
+/************** DELETE LEADS ************/
+function* deleteLeads(action) {
+  const leadIds = action.payload.leadIds;
+  try {
+    yield call(axios.delete, "/api/leads/delete", {
+      data: {leadIds: leadIds}
+    });
+    yield put(fetchLeadsRequest());
+  } catch(error){
+    console.error(error);
+  }
+}
+
 export default function* leadSaga() {
   yield takeLatest(FETCH_LEADS_REQUEST, fetchLeads);
   yield takeLatest(FETCH_DATA_REQUEST, fetchData);
@@ -161,4 +178,5 @@ export default function* leadSaga() {
   yield takeLatest(UPDATE_STATUS_REQUEST, updateLeadStatus);
   yield takeLatest(BATCH_UPDATE_REQUEST, batchUpdate);
   yield takeLatest(UPDATE_LEAD_REQUEST, updateLead);
+  yield takeLatest(DELETE_LEADS_REQUEST, deleteLeads);
 }

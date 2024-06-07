@@ -13,7 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 export default function EnhancedTableToolbar(props) {
-  const { numSelected, handleBatchStatusChange, statusOptions } = props;
+  const { numSelected, handleBatchStatusChange, statusOptions, deleteSelected } = props;
   const [batchStatus, setBatchStatus] = useState("");
 
   const handleChange = (event) => {
@@ -76,7 +76,7 @@ export default function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={() => deleteSelected()}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>

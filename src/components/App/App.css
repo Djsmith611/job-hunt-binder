@@ -1,12 +1,17 @@
 html,
 body,
 #react-root {
-  height: 100%;
+  min-height: 100vh;
+  padding: 0;
+  cursor: default;
+  background-color: #f5f5f5;
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0px;
+  display: flex;
+  flex-direction: column;
 }
 
 img {
@@ -19,7 +24,9 @@ Container
 -------------------------------------------------------------------------------- */
 
 .container {
-  padding: 20px;
+  padding: 0;
+  min-height: 100vh; /* Ensure the container takes the full viewport height */
+  position: relative;
 }
 
 /* --------------------------------------------------------------------------------
@@ -27,15 +34,10 @@ Button
 -------------------------------------------------------------------------------- */
 
 .btn {
-  display: inline-block;
-  padding: 10px 20px;
-  border-color: #014041;
-  border-width: 1px 1px 3px;
-  border-radius: 4px;
-  background-color: #00acb0;
-  color: #f8f8f8;
-  font-size: 1.1rem;
-  outline: 0;
+  margin:auto;
+  width: 100%;
+  background-color: rgb(0, 0, 0);
+  color:#efefef;
   cursor: pointer;
 }
 
@@ -55,25 +57,28 @@ Button
 }
 
 .btn:hover {
-  background-color: #008183;
+  background-color: #e90b0b;
   text-decoration: none;
+  color:black;
 }
 
 /* This line makes the "Register" and "Login" buttons look like links */
 .btn_asLink {
   padding: 0;
+  width:auto;
   border-width: 0;
   border-bottom: 1px solid #444;
   border-radius: 0;
-  background: none;
+  background:none;
   font: inherit;
-  color: #444;
+  color: #a36464;
+  cursor: pointer;
 }
 
 .btn_asLink:hover {
   background-color: transparent;
-  border-color: #008183;
-  color: #008183;
+  border-color: #830000;
+  color: #d90202;
 }
 
 /* --------------------------------------------------------------------------------
@@ -84,10 +89,10 @@ Alert
   box-sizing: border-box;
   padding: 15px 10px;
   margin: 15px 0;
-  border: 2px solid #e01616;
+  border: 2px solid #e08816;
   background-color: #efefef;
   border-radius: 3px;
-  color: #e01616;
+  color: #e08f16;
   font-size: 0.8rem;
 }
 
@@ -101,6 +106,7 @@ Form Treatment
   max-width: 100%;
   padding: 25px;
   margin: 0 auto 20px;
+  margin-top: 10%;
   background-color: #efefef;
   border-radius: 3px;
   box-shadow: 0 1px 2px rgb(0, 0, 0, 0.4);

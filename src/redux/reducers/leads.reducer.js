@@ -7,6 +7,9 @@ import {
   SET_TYPES,
   SET_FIELDS,
   SET_LEADS,
+  FETCH_LEADS_REQUEST,
+  FETCH_LEADS_SUCCESS,
+  FETCH_LEADS_FAILURE,
 } from "../../modules/actions/leadActions";
 
 const initialDataState = {
@@ -19,6 +22,12 @@ const initialDataState = {
 };
 
 const initialLeadsState = [];
+
+const initialLeadLoadState = {
+  loading: false,
+  error: null,
+};
+
 
 const dataReducer = (state = initialDataState, action) => {
   const values = action.payload;
@@ -67,7 +76,32 @@ const leadsReducer = (state = initialLeadsState, action) => {
   }
 };
 
+const leadLoadReducer = (state = initialLeadLoadState, action) => {
+  switch(action.type) {
+    case FETCH_LEADS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case FETCH_LEADS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      }
+    case FETCH_LEADS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   data: dataReducer,
   leads: leadsReducer,
+  leadLoad: leadLoadReducer,
 });
