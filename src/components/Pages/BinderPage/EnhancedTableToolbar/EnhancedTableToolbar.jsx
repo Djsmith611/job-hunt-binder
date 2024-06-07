@@ -51,10 +51,10 @@ export default function EnhancedTableToolbar(props) {
             onChange={handleChange}
             displayEmpty
             inputProps={{ "aria-label": "Batch Status" }}
-            sx={{ minWidth: 120, marginRight: 2 }}
+            sx={{ minWidth:"250px", marginRight:"40%", textAlign:"center" }}
           >
             <MenuItem value="" disabled>
-              Set Status
+              Select Status to Apply
             </MenuItem>
             {statusOptions.map((status) => (
               <MenuItem key={status.name} value={status.id}>

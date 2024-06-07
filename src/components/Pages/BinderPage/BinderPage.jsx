@@ -169,6 +169,7 @@ export default function BinderPage() {
   const handleBatchStatusChange = (statusId) => {
     dispatch(batchUpdateRequest(statusId, selected));
     setSelected([]);
+    setSelectAllChecked(false);
   };
 
   const deleteSelected = () => {
