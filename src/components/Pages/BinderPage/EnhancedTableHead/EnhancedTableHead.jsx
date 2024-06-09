@@ -28,10 +28,10 @@ const headCells = [
     label: "Description",
   },
   {
-    id: "documents",
+    id: "document",
     numeric: false,
     disablePadding: false,
-    label: "Documents",
+    label: "Document",
   },
 ];
 

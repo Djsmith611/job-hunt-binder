@@ -135,7 +135,6 @@ router.put("/batch", rejectUnauthenticated, (req, res) => {
 
 /****************** UPDATE USER LEAD *******************/
 router.put("/:id", rejectUnauthenticated, (req, res) => {
-  console.log(req.body);
   const leadId = req.params.id; // Logged in user id
 
   let { status, title, field, company, location, type, notes, description } =

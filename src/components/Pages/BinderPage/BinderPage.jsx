@@ -6,6 +6,7 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
+  Typography,
   Paper,
   FormControlLabel,
   Switch,
@@ -74,7 +75,6 @@ export default function BinderPage() {
   const leads = useLeads();
   const leadLoad = useLeadLoad();
 
-
   const {
     statuses: statusOptions = [],
     companies: companiesOptions = [],
@@ -84,7 +84,6 @@ export default function BinderPage() {
     fields: fieldsOptions = [],
   } = data;
 
-  // const { loading, error } = leadLoad;
   const rowsData = leads;
 
   // State variables for table and pagination
@@ -94,6 +93,41 @@ export default function BinderPage() {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const initialRowState = {
+    status: "",
+    title: "",
+    field: "",
+    company: "",
+    location: "",
+    type: "",
+    notes: "",
+    description: "",
+  };
+
+  const [isDescription, setIsDescription] = useState(false);
+  const [isNotes, setIsNotes] = useState(false);
+  const [rowClicked, setRowClicked] = useState({});
+
+  const openDescription = (row) => {
+    setRowClicked(row);
+    setIsDescription(true);
+  };
+
+  const closeDescription = () => {
+    setIsDescription(false);
+    setRowClicked({});
+  };
+
+  const openNotes = (row) => {
+    setRowClicked(row);
+    setIsNotes(true);
+  };
+
+  const closeNotes = () => {
+    setIsNotes(false);
+    setRowClicked({});
+  };
 
   // State variables for modals and forms
   const [open, setOpen] = useState(false);
@@ -113,7 +147,7 @@ export default function BinderPage() {
   const handleSelectAllClick = () => {
     if (selectAllChecked) {
       setSelected([]);
-    } else {      
+    } else {
       const newSelected = visibleRows.map((n) => n.id);
       setSelected(newSelected);
     }
@@ -161,7 +195,9 @@ export default function BinderPage() {
 
   // Handle status edit for a row
   const handleStatusEdit = async (leadId, statusName) => {
-    const statusId = await statusOptions.find(option => option.name === statusName)?.id;
+    const statusId = await statusOptions.find(
+      (option) => option.name === statusName
+    )?.id;
     dispatch(updateStatusRequest(leadId, statusId));
   };
 
@@ -188,8 +224,8 @@ export default function BinderPage() {
 
   // Handle edit form open
   const openEdit = (row) => {
-    setIsEdit(true);
     setLeadToEdit(row);
+    setIsEdit(true);
   };
 
   // Handle edit form close
@@ -212,24 +248,6 @@ export default function BinderPage() {
     [order, orderBy, page, rowsPerPage, rowsData]
   );
 
-  // if (loading) {
-  //   return (
-  //     <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-  //       <CircularProgress />
-  //     </Box>
-  //   );
-  // }
-
-  // if (error) {
-  //   return (
-  //     <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-  //       <Typography variant="h6" color="error">
-  //         {error}
-  //       </Typography>
-  //     </Box>
-  //   );
-  // }
-
   return (
     <div className="container">
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -237,7 +255,6 @@ export default function BinderPage() {
           numSelected={selected.length}
           handleBatchStatusChange={handleBatchStatusChange}
           statusOptions={statusOptions}
-
           deleteSelected={deleteSelected}
         />
         <TableContainer>
@@ -279,7 +296,7 @@ export default function BinderPage() {
                       <Select
                         value={row.status}
                         variant="standard"
-                        margin={dense? "dense" : "none"}
+                        // margin={dense ? "dense" : "none"}
                         onChange={(event) =>
                           handleStatusEdit(row.id, event.target.value)
                         }
@@ -302,16 +319,40 @@ export default function BinderPage() {
                     <TableCell align="left">{row.company}</TableCell>
                     <TableCell align="left">{row.location}</TableCell>
                     <TableCell align="left">{row.type}</TableCell>
-                    <TableCell align="left">{row.notes}</TableCell>
-                    <TableCell align="left">{row.description}</TableCell>
+                    <TableCell
+                      align="left"
+                      onClick={() => openNotes(row)}
+                      sx={{
+                        cursor: "pointer",
+                        color: "darkblue",
+                        "&:hover": { color: "blue" },
+                      }}
+                    >
+                      View Notes
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      onClick={() => openDescription(row)}
+                      sx={{
+                        cursor: "pointer",
+                        color: "darkblue",
+                        "&:hover": { color: "blue" },
+                      }}
+                    >
+                      View Description
+                    </TableCell>
                     <TableCell align="left">
-                      <a
-                        href={row.documents}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        View Document
-                      </a>
+                      {row.document === null ? (
+                        ""
+                      ) : (
+                        <a
+                          href={row.document}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          View Document
+                        </a>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Tooltip title="Edit">
@@ -352,8 +393,82 @@ export default function BinderPage() {
       >
         <NewLeadForm setOpen={setOpen} />
       </Backdrop>
-      <Backdrop open={isEdit} onClick={closeEdit}>
-        <EditForm setIsEdit={setIsEdit} lead={leadToEdit} />
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={isEdit}
+        onClick={closeEdit}
+      >
+        <EditForm lead={leadToEdit} closeEdit={closeEdit} />
+      </Backdrop>
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={isDescription}
+        onClick={closeDescription}
+      >
+        <Box
+          sx={{
+            bgcolor: "background.paper",
+            p: 4,
+            borderRadius: 1,
+            boxShadow: 24,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            width: 400,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Typography
+            variant="h6"
+            style={{ color: "black", textAlign: "center" }}
+          >
+            Description
+          </Typography>
+          <Typography
+            variant="body1"
+            style={{ color: "black", textAlign: "center" }}
+          >
+            {rowClicked.description}
+          </Typography>
+        </Box>
+      </Backdrop>
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={isNotes}
+        onClick={closeNotes}
+      >
+        <Box
+          sx={{
+            bgcolor: "background.paper",
+            p: 4,
+            borderRadius: 1,
+            boxShadow: 24,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            width: 400,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Typography
+            variant="h6"
+            style={{ color: "black", textAlign: "center" }}
+          >
+            Notes
+          </Typography>
+          <Typography
+            variant="body1"
+            style={{ color: "black", textAlign: "center" }}
+          >
+            {rowClicked.notes}
+          </Typography>
+        </Box>
       </Backdrop>
     </div>
   );

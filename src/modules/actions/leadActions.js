@@ -13,9 +13,9 @@ export const FETCH_DATA_SUCCESS = "FETCH_DATA_SUCCESS";
 export const FETCH_DATA_FAILURE = "FETCH_DATA_FAILURE";
 
 /********************** FETCH LEADS **************************/
-export const FETCH_LEADS_REQUEST = "FETCH_LEAD_REQUEST";
-export const FETCH_LEADS_SUCCESS = "FETCH_LEAD_SUCCESS";
-export const FETCH_LEADS_FAILURE = "FETCH_LEAD_FAILURE";
+export const FETCH_LEADS_REQUEST = "FETCH_LEADS_REQUEST";
+export const FETCH_LEADS_SUCCESS = "FETCH_LEADS_SUCCESS";
+export const FETCH_LEADS_FAILURE = "FETCH_LEADS_FAILURE";
 
 /********************** ADD LEAD **************************/
 export const ADD_LEAD_REQUEST = "ADD_LEAD_REQUEST";
@@ -41,6 +41,10 @@ export const BATCH_UPDATE_FAILURE = "BATCH_UPDATE_FAILURE";
 export const DELETE_LEADS_REQUEST = "DELETE_LEADS_REQUEST";
 export const DELETE_LEADS_SUCCESS = "DELETE_LEADS_SUCCESS";
 export const DELETE_LEADS_FAILURE = "DELETE_LEADS_FAILURE";
+
+export const UPLOAD_DOCUMENT_REQUEST = "UPLOAD_DOCUMENT_REQUEST";
+export const UPLOAD_DOCUMENT_SUCCESS = "UPLOAD_DOCUMENT_SUCCESS";
+export const UPLOAD_DOCUMENT_FAILURE = "UPLOAD_DOCUMENT_FAILURE";
 
 /********************** SET DATA **************************/
 export const setStatuses = (statuses) => ({
@@ -186,5 +190,20 @@ export const deleteLeadsSuccess = () => ({
 
 export const deleteLeadsFailure = (error) => ({
   type: DELETE_LEADS_FAILURE,
+  payload: error,
+})
+
+export const uploadDocumentRequest = (document, leadId) => ({
+  type: UPLOAD_DOCUMENT_REQUEST,
+  payload: {
+    document: document,
+    leadId: leadId,
+  }
+})
+export const uploadDocumentSuccess = () => ({
+  type: UPLOAD_DOCUMENT_SUCCESS,
+})
+export const uploadDocumentFailure = (error) => ({
+  type: UPLOAD_DOCUMENT_FAILURE,
   payload: error,
 })

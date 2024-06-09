@@ -1,55 +1,70 @@
-import { Autocomplete, Box, TextField, Select, MenuItem, Button } from "@mui/material";
-import { useState } from "react";
+import {
+  Autocomplete,
+  Box,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+  Button,
+} from "@mui/material";
+import { useState, useEffect } from "react";
 import useData from "../../../modules/hooks/useData";
 import { useDispatch } from "react-redux";
-import { updateLeadRequest } from "../../../modules/actions/leadActions";
+import { updateLeadRequest, uploadDocumentRequest } from "../../../modules/actions/leadActions";
 
 export default function EditForm({ lead, closeEdit }) {
   const data = useData();
   const {
-    statuses: statusOptions,
-    types: typeOptions,
-    titles: titlesOptions,
-    fields: fieldsOptions,
-    companies: companiesOptions,
-    locations: locationsOptions,
+    statuses: statusOptions = [],
+    types: typeOptions = [],
+    titles: titlesOptions = [],
+    fields: fieldsOptions = [],
+    companies: companiesOptions = [],
+    locations: locationsOptions = [],
   } = data;
 
-  const {
-    title: initialTitle,
-    status: initialStatus,
-    field: initialField,
-    company: initialCompany,
-    location: initialLocation,
-    type: initialType,
-    notes: initialNotes,
-    description: initialDescription,
-    document: initialDocument,
-  } = lead;
+  const [id, setId] = useState(lead?.id || 1)
+  const [title, setTitle] = useState(lead?.title || "");
+  const [status, setStatus] = useState(
+    statusOptions.find(option => option.name === lead?.status)?.id || ""
+  );
+  const [field, setField] = useState(lead?.field || "");
+  const [company, setCompany] = useState(lead?.company || "");
+  const [location, setLocation] = useState(lead?.location || "");
+  const [type, setType] = useState(
+    typeOptions.find(option => option.name === lead?.type)?.id || ""
+  );
+  const [notes, setNotes] = useState(lead?.notes || "");
+  const [description, setDescription] = useState(lead?.description || "");
+  const [document, setDocument] = useState(null);
 
-  const [title, setTitle] = useState(initialTitle);
-  const [status, setStatus] = useState(initialStatus);
-  const [field, setField] = useState(initialField);
-  const [company, setCompany] = useState(initialCompany);
-  const [location, setLocation] = useState(initialLocation);
-  const [type, setType] = useState(initialType);
-  const [notes, setNotes] = useState(initialNotes);
-  const [description, setDescription] = useState(initialDescription);
-  const [document, setDocument] = useState(initialDocument);
+  useEffect(() => {
+    if (lead && statusOptions.length && typeOptions.length) {
+      setId(lead.id || 1)
+      setTitle(lead.title || "");
+      setStatus(statusOptions.find(option => option.name === lead.status)?.id || "");
+      setField(lead.field || "");
+      setCompany(lead.company || "");
+      setLocation(lead.location || "");
+      setType(typeOptions.find(option => option.name === lead.type)?.id || "");
+      setNotes(lead.notes || "");
+      setDescription(lead.description || "");
+    }
+  }, [lead, statusOptions, typeOptions]);
 
   const dispatch = useDispatch();
 
   const sendLead = () => {
     const leadToSend = {
-      title: titlesOptions.find(option => option.name === title)?.id || title,
+      id: lead.id, // Ensure you include the ID to update the correct lead
+      title: titlesOptions.find((option) => option.name === title)?.id || title,
       status: status,
-      field: fieldsOptions.find(option => option.name === field)?.id || field,
-      company: companiesOptions.find(option => option.name === company)?.id || company,
-      location: locationsOptions.find(option => option.name === location)?.id || location,
+      field: fieldsOptions.find((option) => option.name === field)?.id || field,
+      company: companiesOptions.find((option) => option.name === company)?.id || company,
+      location: locationsOptions.find((option) => option.name === location)?.id || location,
       type: type,
       notes: notes,
       description: description,
-      document: document
     };
 
     dispatch(updateLeadRequest(leadToSend));
@@ -65,21 +80,52 @@ export default function EditForm({ lead, closeEdit }) {
 
   const handleSubmit = () => {
     sendLead();
+    if (document) {
+      const formData = new FormData();
+      formData.append('document', document);
+      dispatch(uploadDocumentRequest(formData, id));
+    }
     handleClose();
   };
 
+  const handleDocumentChange = (e) => {
+    setDocument(e.target.files[0]);
+  };
+
   return (
-    <Box>
+    <Box
+      sx={{
+        bgcolor: "background.paper",
+        p: 4,
+        borderRadius: 1,
+        boxShadow: 24,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        width: 400,
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Typography
+        variant="h6"
+        component="h2"
+        style={{ color: "black", textAlign: "center" }}
+      >
+        Edit Lead
+      </Typography>
       <Select
         name="status"
         value={status}
         onChange={(e) => setStatus(parseInt(e.target.value))}
         inputProps={{ "aria-label": "Status" }}
         fullWidth
-        margin="normal"
       >
         {statusOptions.map((status) => (
-          <MenuItem key={status.id} value={status.id}>
+          <MenuItem
+            key={status.id}
+            value={status.id}
+            sx={{ color: status.color }}
+          >
             {status.name}
           </MenuItem>
         ))}
@@ -90,7 +136,6 @@ export default function EditForm({ lead, closeEdit }) {
         onChange={(e) => setType(parseInt(e.target.value))}
         inputProps={{ "aria-label": "Type" }}
         fullWidth
-        margin="normal"
       >
         {typeOptions.map((type) => (
           <MenuItem key={type.id} value={type.id}>
@@ -102,37 +147,45 @@ export default function EditForm({ lead, closeEdit }) {
         freeSolo
         value={title}
         options={titlesOptions.map((option) => option.name)}
-        onInputChange={(event, newInputValue) =>
+        onChange={(event, newInputValue) =>
           handleAutoCompleteChange(event, newInputValue, setTitle)
         }
-        renderInput={(params) => <TextField {...params} label="Title" fullWidth margin="normal" />}
+        renderInput={(params) => (
+          <TextField {...params} label="Title" fullWidth />
+        )}
       />
       <Autocomplete
         freeSolo
         value={field}
         options={fieldsOptions.map((option) => option.name)}
-        onInputChange={(event, newInputValue) =>
+        onChange={(event, newInputValue) =>
           handleAutoCompleteChange(event, newInputValue, setField)
         }
-        renderInput={(params) => <TextField {...params} label="Field" fullWidth margin="normal" />}
+        renderInput={(params) => (
+          <TextField {...params} label="Field" fullWidth />
+        )}
       />
       <Autocomplete
         freeSolo
         value={company}
         options={companiesOptions.map((option) => option.name)}
-        onInputChange={(event, newInputValue) =>
+        onChange={(event, newInputValue) =>
           handleAutoCompleteChange(event, newInputValue, setCompany)
         }
-        renderInput={(params) => <TextField {...params} label="Company" fullWidth margin="normal" />}
+        renderInput={(params) => (
+          <TextField {...params} label="Company" fullWidth />
+        )}
       />
       <Autocomplete
         freeSolo
         value={location}
         options={locationsOptions.map((option) => option.name)}
-        onInputChange={(event, newInputValue) =>
+        onChange={(event, newInputValue) =>
           handleAutoCompleteChange(event, newInputValue, setLocation)
         }
-        renderInput={(params) => <TextField {...params} label="Location" fullWidth margin="normal" />}
+        renderInput={(params) => (
+          <TextField {...params} label="Location" fullWidth />
+        )}
       />
       <TextField
         label="Description"
@@ -140,7 +193,6 @@ export default function EditForm({ lead, closeEdit }) {
         onChange={(e) => setDescription(e.target.value)}
         multiline
         fullWidth
-        margin="normal"
       />
       <TextField
         label="Notes"
@@ -148,21 +200,36 @@ export default function EditForm({ lead, closeEdit }) {
         onChange={(e) => setNotes(e.target.value)}
         multiline
         fullWidth
-        margin="normal"
       />
+      <Typography
+        variant="body1"
+        component="h3"
+        style={{ color: "black", textAlign: "center" }}
+      >
+        Add your Resume (optional)
+      </Typography>
       <TextField
-        label="Document"
         type="file"
-        value={document}
-        onChange={(e) => setDocument(e.target.value)}
+        onChange={handleDocumentChange}
         fullWidth
-        margin="normal"
       />
       <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 2 }}>
-        <Button variant="text" onClick={handleClose} sx={{ color: 'grey', '&:hover': { color: 'red' } }}>
+        <Button
+          variant="text"
+          onClick={handleClose}
+          sx={{ color: "grey", "&:hover": { color: "red" } }}
+        >
           Cancel
         </Button>
-        <Button variant="contained" onClick={handleSubmit} sx={{ bgcolor: 'black', color: 'red', '&:hover': { color: 'white', backgroundColor: 'red' } }}>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          sx={{
+            bgcolor: "black",
+            color: "red",
+            "&:hover": { color: "white", backgroundColor: "red" },
+          }}
+        >
           Submit
         </Button>
       </Box>

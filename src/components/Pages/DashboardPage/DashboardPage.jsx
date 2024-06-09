@@ -5,6 +5,8 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchUserRequest } from "../../../modules/actions/loginActions";
+import FolderButton from "../../Util/Buttons/FolderButton/FolderButton";
+
 const days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
 const getDayOfWeek = () => {
@@ -38,6 +40,7 @@ export default function Dashboard() {
   const user = useUser();
   const fullName = `${user.f_name} ${user.l_name}`;
   const [huntLength, setHuntLength] = useState(0);
+  const [readyCount, setReadyCount] = useState(0);
   const [applicationsPerDay, setApplicationsPerDay] = useState(
     new Array(7).fill(0)
   ); // Initialize with zeros
@@ -69,43 +72,27 @@ export default function Dashboard() {
     };
 
     fetchApplicationsPerDay();
+
+    const fetchReadyCount = async () => {
+      try {
+        const readyResponse = await axios.get("/api/data/ready");
+        setReadyCount(parseInt(readyResponse.data));
+      } catch (error) {
+        console.error("Error fetching readyCount:", error);
+      }
+    };
+
+    fetchReadyCount();
+
   }, [user.date_created]);
 
   useEffect(() => {
     dispatch(fetchUserRequest());
   }, [dispatch]);
 
-  const messageRef = useRef(null);
-  const messageRef2 = useRef(null);
-
-  useEffect(() => {
-    const lettering = (node) => {
-      if (!node) return;
-      let str = node.textContent;
-      node.innerHTML = ""; // Clear the node's current content
-
-      // Initialize the new HTML content
-      let newHTML = "<span>";
-      let closeTags = "</span>";
-
-      // Iterate over each character of the string
-      for (let i = 0, iCount = str.length; i < iCount; i++) {
-        newHTML += str[i] + "<span>";
-        closeTags += "</span>";
-      }
-
-      // Update the node's inner HTML with the new content
-      node.innerHTML = newHTML + closeTags;
-    };
-
-    lettering(messageRef.current);
-
-    lettering(messageRef2.current);
-  }, []);
-
   return (
     <div className="dashboard">
-      <h1 className="binder-title">Welcome back, {fullName}!</h1>
+      {/* <h1 className="binder-title">Welcome back, {fullName}!</h1> */}
       <div className="this-week">
         <h1>This Week's Applications</h1>
         <div className="days-container">
@@ -126,37 +113,36 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="binder">
-        <div className="title-container"></div>
-        <div className="dash">
-          <div className="message-box">
-            <div className="message-container">
-              <h3 ref={messageRef} className="message-one">
-                You've been searching for{" "}
-              </h3>
-              <div className="message-value">
-                <span className="message-count">
-                  {huntLength} {huntLength === 1 ? "day" : "days"}
-                </span>
-              </div>
-            </div>
-            <div className="button-cont">
-              <button className="dash-btn" onClick={() => navigate('/binder')}>Binder</button>
-              <button className="dash-btn" onClick={() => navigate('/analytics')}>Analytics</button>
-            </div>
-            <div className="message-container">
-              <h3 ref={messageRef2} className="message-two">
-                You've submitted{" "}
-              </h3>
-              <div className="message-value">
-                <span className="message-count">
-                  {appliedCount} applications!
-                </span>
-              </div>
-            </div>
-          </div>
+      <div className="dash-cont">
+        <div className="message-box">
+          <h3 className="message-one">
+            You've been searching for{" "}
+            <span className="message-count">
+              {huntLength} {huntLength === 1 ? "day" : "days"}
+            </span>
+            , with{" "}
+            <span className="message-count">{appliedCount} applications</span>.
+          </h3>
+        </div>
+        <div className="message-box">
+          <h3 className="message-one">
+            <span className="message-count">
+              {readyCount} {readyCount === 1 ? "job" : "jobs"}
+            </span>{" "}
+             marked ready to apply.
+          </h3>
+        </div>
+        <div className="button-cont">
+          <FolderButton
+            text="Binder"
+            clickFunction={() => navigate("/binder")}
+          />
+          <FolderButton
+            text="Analytics"
+            clickFunction={() => navigate("/analytics")}
+          />
         </div>
       </div>
     </div>
   );
-};
+}

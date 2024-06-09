@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { all, call, put, takeLatest } from "redux-saga/effects";
 import {
   ADD_LEAD_REQUEST,
   BATCH_UPDATE_REQUEST,
@@ -31,29 +31,40 @@ function* fetchLeads(action) {
   } catch (error) {
     console.error(error);
     const message = error.message;
+    yield put(fetchDataRequest());
     yield put(fetchLeadsFailure(message));
+  } finally {
+    yield put(fetchDataRequest());
   }
 }
 
 function* fetchData(action) {
   try {
-    const typesResponse = yield call(axios.get, "/api/data/types");
-    yield put(setTypes(typesResponse.data));
-
-    const companiesResponse = yield call(axios.get, "/api/data/companies");
-    yield put(setCompanies(companiesResponse.data));
-
-    const locationsResponse = yield call(axios.get, "/api/data/locations");
-    yield put(setLocations(locationsResponse.data));
-
-    const statusesResponse = yield call(axios.get, "/api/data/statuses");
-    yield put(setStatuses(statusesResponse.data));
-
-    const titlesResponse = yield call(axios.get, "/api/data/titles");
-    yield put(setTitles(titlesResponse.data));
-
-    const fieldsResponse = yield call(axios.get, "/api/data/fields");
-    yield put(setFields(fieldsResponse.data));
+    const [
+      typeResponse,
+      companiesResponse,
+      locationsResponse,
+      statusesResponse,
+      titlesResponse,
+      fieldsResponse,
+    ] = yield all([
+      call(axios.get, '/api/data/types'),
+      call(axios.get, '/api/data/companies'),
+      call(axios.get, '/api/data/locations'),
+      call(axios.get, '/api/data/statuses'),
+      call(axios.get, '/api/data/titles'),
+      call(axios.get, '/api/data/fields'),
+    ]);
+      console.log(typeResponse.data);
+    yield all([
+      put(setTypes(typeResponse.data)),
+      put(setCompanies(companiesResponse.data)),
+      put(setLocations(locationsResponse.data)),
+      put(setStatuses(statusesResponse.data)),
+      put(setTitles(titlesResponse.data)),
+      put(setFields(fieldsResponse.data)),
+    ]);
+   
   } catch (error) {
     console.error(error);
     const message = error.message;
@@ -67,6 +78,7 @@ function* addLead(action) {
 
   const replaceWithIds = async (field, value) => {
     try {
+      console.log(`/api/data/${field}`, {value});
       const idResponse = await axios.post(`/api/data/${field}`, {value});
       return idResponse.data;
     } catch (error) {
@@ -75,7 +87,7 @@ function* addLead(action) {
   };
 
   for (let key in lead) {
-    if (typeof lead[key] === "string") {
+    if (typeof lead[key] === "string" && key !== 'type' && key !== 'status') {
       const numericValue = parseInt(lead[key], 10);
       if (!isNaN(numericValue)) {
         leadToPost[key] = numericValue;
@@ -124,8 +136,10 @@ function* updateLeadStatus(action) {
 }
 /************** UPDATE LEAD ************/
 function* updateLead(action) {
-  const leadId = parseInt(action.payload.leadId);
-  const lead = action.payload.lead;
+  console.log(action);
+  const leadId = parseInt(action.payload.id);
+  const lead = action.payload;
+  console.log(lead);
   let leadToPost = { ...lead };
   const replaceWithIds = async (field, value) => {
     try {
@@ -136,7 +150,7 @@ function* updateLead(action) {
     }
   };
   for (let key in lead) {
-    if (typeof lead[key] === "string") {
+    if (typeof lead[key] === "string" && key !== "notes" && key !== "description") {
       const numericValue = parseInt(lead[key], 10);
       if (!isNaN(numericValue)) {
         leadToPost[key] = numericValue;

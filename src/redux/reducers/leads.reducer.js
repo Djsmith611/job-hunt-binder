@@ -31,6 +31,7 @@ const initialLeadLoadState = {
 
 const dataReducer = (state = initialDataState, action) => {
   const values = action.payload;
+  console.log(action);
   switch (action.type) {
     case SET_STATUSES:
       return {

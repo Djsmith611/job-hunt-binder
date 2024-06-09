@@ -54,6 +54,7 @@ export default function NewLeadForm({ setOpen }) {
   };
 
   const handleClose = () => {
+    setNewLead(initialState);
     setOpen(false);
   };
 
@@ -109,7 +110,14 @@ export default function NewLeadForm({ setOpen }) {
         displayEmpty
         inputProps={{ "aria-label": "Status" }}
         fullWidth
-        margin="normal"
+        MenuProps={{
+          PaperProps: {
+            style: {
+              maxHeight: 200,
+            },
+          },
+          disableScrollLock: true,
+        }}
       >
         <MenuItem value="" disabled>
           Select Status
@@ -127,7 +135,14 @@ export default function NewLeadForm({ setOpen }) {
         displayEmpty
         inputProps={{ "aria-label": "Type" }}
         fullWidth
-        margin="normal"
+        MenuProps={{
+          PaperProps: {
+            style: {
+              maxHeight: 200,
+            },
+          },
+          disableScrollLock: true,
+        }}
       >
         <MenuItem value="" disabled>
           Select Type
@@ -141,45 +156,45 @@ export default function NewLeadForm({ setOpen }) {
       <Autocomplete
         freeSolo
         options={titlesOptions.map((option) => option.name)}
-        inputValue={newLead.title}
-        onInputChange={(event, newInputValue) =>
-          handleAutocompleteChange(event, newInputValue, "title")
+        value={newLead.title}
+        onChange={(event, newValue) =>
+          handleAutocompleteChange(event, newValue, "title")
         }
         renderInput={(params) => (
-          <TextField {...params} label="Title" fullWidth margin="normal" />
+          <TextField {...params} label="Title" fullWidth />
         )}
       />
       <Autocomplete
         freeSolo
         options={fieldsOptions.map((option) => option.name)}
-        inputValue={newLead.field}
-        onInputChange={(event, newInputValue) =>
-          handleAutocompleteChange(event, newInputValue, "field")
+        value={newLead.field}
+        onChange={(event, newValue) =>
+          handleAutocompleteChange(event, newValue, "field")
         }
         renderInput={(params) => (
-          <TextField {...params} label="Field" fullWidth margin="normal" />
+          <TextField {...params} label="Field" fullWidth />
         )}
       />
       <Autocomplete
         freeSolo
         options={companiesOptions.map((option) => option.name)}
-        inputValue={newLead.company}
-        onInputChange={(event, newInputValue) =>
-          handleAutocompleteChange(event, newInputValue, "company")
+        value={newLead.company}
+        onChange={(event, newValue) =>
+          handleAutocompleteChange(event, newValue, "company")
         }
         renderInput={(params) => (
-          <TextField {...params} label="Company" fullWidth margin="normal" />
+          <TextField {...params} label="Company" fullWidth />
         )}
       />
       <Autocomplete
         freeSolo
         options={locationsOptions.map((option) => option.name)}
-        inputValue={newLead.location}
-        onInputChange={(event, newInputValue) =>
-          handleAutocompleteChange(event, newInputValue, "location")
+        value={newLead.location}
+        onChange={(event, newValue) =>
+          handleAutocompleteChange(event, newValue, "location")
         }
         renderInput={(params) => (
-          <TextField {...params} label="Location" fullWidth margin="normal" />
+          <TextField {...params} label="Location" fullWidth />
         )}
       />
       <TextField

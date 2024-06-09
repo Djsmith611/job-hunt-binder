@@ -58,6 +58,7 @@ export default function LoginForm() {
         <TextField
           variant="filled"
           value={password}
+          type="password"
           label="Password"
           onChange={(event) => setPassword(event.target.value)}
           sx={{ backgroundColor: "white", margin: "auto" }}

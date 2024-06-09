@@ -72,7 +72,7 @@ router.get("/types", rejectUnauthenticated, (req, res) => {
 
   pool
     .query(queryText)
-    .then((result) => res.status(200).json(result.rows)) // 200(OK) // Sending results
+    .then((result) => res.status(200).json(result.rows)) // 200(OK) // Sending results 
     .catch((err) => {
       console.error("Error fetching types:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
@@ -98,7 +98,7 @@ router.get("/companies", rejectUnauthenticated, (req, res) => {
 }); //* END */
 
 /********************** ADD NEW COMPANY ***********************/
-router.post("/companies", rejectUnauthenticated, (req, res) => {
+router.post("/company", rejectUnauthenticated, (req, res) => {
   const company = req.body.company; // Pulling company from req.body
   // Query will add a new company to the database
   const queryText = `
@@ -134,7 +134,7 @@ router.get("/locations", rejectUnauthenticated, (req, res) => {
 }); /* END */
 
 /********************** ADD NEW LOCATION ***********************/
-router.post("/locations", rejectUnauthenticated, (req, res) => {
+router.post("/location", rejectUnauthenticated, (req, res) => {
   const location = req.body.location; // Pulling location from req.body
   // Query will add a location to the database
   const queryText = `
@@ -189,7 +189,7 @@ router.get("/titles", rejectUnauthenticated, (req, res) => {
 }); /* END */
 
 /********************** ADD NEW TITLE ***********************/
-router.post("/titles", rejectUnauthenticated, (req, res) => {
+router.post("/title", rejectUnauthenticated, (req, res) => {
   const title = req.body.title; // Pulling title from req.body
   // Query will add new title to database
   const queryText = `
@@ -224,7 +224,7 @@ router.get("/fields", rejectUnauthenticated, (req, res) => {
 }); /* END */
 
 /********************** ADD NEW FIELD ***********************/
-router.post("/fields", rejectUnauthenticated, (req, res) => {
+router.post("/field", rejectUnauthenticated, (req, res) => {
   const field = req.body.field; // Pulling field from req.body
   // Query will add field to database
   const queryText = `
@@ -240,5 +240,26 @@ router.post("/fields", rejectUnauthenticated, (req, res) => {
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
 }); /* END */
+
+/********************** READY COUNT ***********************/
+router.get("/ready", rejectUnauthenticated, (req, res) => {
+  const userId = req.user.id;
+  const queryText = `
+    SELECT COUNT(*) AS readyCount
+    FROM "leads"
+    WHERE "user_id" = $1 AND "status_id" = 1;
+  `;
+
+  pool
+    .query(queryText, [userId])
+    .then((result) => {
+      // console.log(result.rows[0].readycount);
+      res.status(200).send(result.rows[0].readycount);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.sendStatus(500);
+    })
+});
 
 module.exports = router;
