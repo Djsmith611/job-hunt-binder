@@ -1,24 +1,27 @@
-// No changes should be required in this file
+const bcrypt = require('bcryptjs'); // Import bcryptjs for hashing and comparing passwords
 
-const bcrypt = require('bcryptjs');
+const SALT_WORK_FACTOR = 10; // Define the salt work factor, determining the complexity of the salt
 
-const SALT_WORK_FACTOR = 10; // This determines how secure the salt should be
-
+/**
+ * Encrypts a password using bcrypt.
+ * @param {string} password - The password to be encrypted.
+ * @returns {string} The hashed password.
+ */
 const encryptPassword = (password) => {
-  const salt = bcrypt.genSaltSync(SALT_WORK_FACTOR); // This generates a random salt
-  // This next line hashes the user password and the random salt
-  // this salt and hash (and not the actual password) will then get stored in the database
+  const salt = bcrypt.genSaltSync(SALT_WORK_FACTOR); // Generate a random salt
+  // Hash the user password along with the generated salt
+  // Store the salt and hash in the database instead of the actual password
   return bcrypt.hashSync(password, salt);
 };
 
+/**
+ * Compares a candidate password with a stored hashed password.
+ * @param {string} candidatePassword - The password input by the user.
+ * @param {string} storedPassword - The hashed password stored in the database.
+ * @returns {boolean} True if the passwords match, false otherwise.
+ */
 const comparePassword = (candidatePassword, storedPassword) => {
-  /*
-  This takes in the candidate password (what the user entered) to check it.
-  The stored password has the original salt, so it will run the
-  candidate password and salt through the same hashing process as before.
-  If that result is the same as the stored password, then we have a match!
-  If this interests you, check out this video https://www.youtube.com/watch?v=8ZtInClXe1Q
-  */
+  // Compare the candidate password with the stored hashed password
   return bcrypt.compareSync(candidatePassword, storedPassword);
 };
 
