@@ -45,7 +45,9 @@ const parsefile = async (req, directoryUrl) => {
       // Construct the S3 key for the file
       const url = new URL(directoryUrl);
       const directoryPath = url.pathname;
-      const s3Key = `${directoryPath}${Date.now().toString()}-${file.originalFilename}`;
+      const s3Key = `${directoryPath}${Date.now().toString()}-${
+        file.originalFilename
+      }`;
 
       // Custom file open function to handle the stream
       file.open = async function () {
@@ -79,7 +81,10 @@ const parsefile = async (req, directoryUrl) => {
           .done()
           .then((data) => {
             console.log("File upload complete:", data.Location); // Log the completion of file upload
-            form.emit("data", { name: "complete", value: { Location: data.Location } }); // Emit data event with the S3 location
+            form.emit("data", {
+              name: "complete",
+              value: { Location: data.Location },
+            }); // Emit data event with the S3 location
           })
           .catch((err) => {
             console.error("Upload error:", err); // Log upload errors

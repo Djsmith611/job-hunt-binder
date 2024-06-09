@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs'); // Import bcryptjs for hashing and comparing passwords
+const bcrypt = require("bcryptjs"); // Import bcryptjs for hashing and comparing passwords
 
 const SALT_WORK_FACTOR = 10; // Define the salt work factor, determining the complexity of the salt
 
