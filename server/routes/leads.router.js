@@ -1,8 +1,7 @@
 const express = require("express");
-const {
-  rejectUnauthenticated,
-} = require("../modules/authentication-middleware"); // Authenticator
+const { rejectUnauthenticated } = require("../modules/authentication-middleware"); // Authenticator
 const pool = require("../modules/pool"); // Database connection
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 const router = express.Router();
 
@@ -246,77 +245,113 @@ router.put("/:id", rejectUnauthenticated, (req, res) => {
 
 /****************** UPDATE USER LEAD STATUS *******************/
 router.put("/status/:id", rejectUnauthenticated, (req, res) => {
-  console.log('changing status, req.body:', req.body);
-    const leadId = parseInt(req.params.id);
-    const status = req.body.statusId;
-    const today = new Date();
-    const localDate = new Date(
-      today.getTime() - today.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .split("T")[0]; // Getting only the date
-    let queryText = ``;
-    let queryValues = []; // Setting query values in order
+  console.log("changing status, req.body:", req.body);
+  const leadId = parseInt(req.params.id);
+  const status = req.body.statusId;
+  const today = new Date();
+  const localDate = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+  )
+    .toISOString()
+    .split("T")[0]; // Getting only the date
+  let queryText = ``;
+  let queryValues = []; // Setting query values in order
 
-
-    if (status === 2) {
-      queryText = `
+  if (status === 2) {
+    queryText = `
         UPDATE "leads"
         SET "status_id" = $1, "app_date" = $2
         WHERE "id" = $3;
       `;
-      queryValues = [status, localDate, leadId];
-    } else if (status === 1) {
-      queryText = `
+    queryValues = [status, localDate, leadId];
+  } else if (status === 1) {
+    queryText = `
         UPDATE "leads"
         SET "status_id" = $1, "app_date" = NULL
         WHERE "id" = $2;
       `;
-      queryValues = [status, leadId];
-    } else {
-      queryText = `
+    queryValues = [status, leadId];
+  } else {
+    queryText = `
         UPDATE "leads"
         SET "status_id" = $1
         WHERE "id" = $2;
       `;
-      queryValues = [status, leadId];
-    }
+    queryValues = [status, leadId];
+  }
 
-    console.log('queryText:', queryText);
-    console.log('queryValues:', queryValues);
+  console.log("queryText:", queryText);
+  console.log("queryValues:", queryValues);
 
-    pool
-        .query(queryText, queryValues)
-        .then((result) => {
-          console.log('change successful')
-            res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500);
-        })
-})
+  pool
+    .query(queryText, queryValues)
+    .then((result) => {
+      console.log("change successful");
+      res.sendStatus(200);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500);
+    });
+});
 
-/****************** DELETE USER LEAD *******************/
-router.delete("/delete", rejectUnauthenticated, (req, res) => {
-    const userId = req.user.id;
-    const leadIds = req.body.leadIds;
-    console.log('req.body:', req.body);
-    console.log('leadIds:', leadIds);
-    const queryText = `
-        DELETE FROM "leads"
-        WHERE "id" = ANY($1::int[]) AND "user_id" = $2;
-    `; // need to delete s3 docs as well
+/****************** DELETE USER LEAD(S) *******************/
+router.delete("/delete", rejectUnauthenticated, async (req, res) => {
+  const userId = req.user.id;
+  const leadIds = req.body.leadIds;
+  console.log("req.body:", req.body);
+  console.log("leadIds:", leadIds);
 
-    pool
-        .query(queryText, [leadIds, userId])
-        .then((result) => {
-            res.sendStatus(200);
-        })
-        .catch((error) => {
-            console.log(error);
-            res.sendStatus(500)
-        })
+  const s3Client = new S3Client({
+    region: process.env.S3_REGION,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+  });
+
+  try {
+    // Fetch document URLs associated with the leads to be deleted
+    const fetchDocsQuery = `
+          SELECT "s3_url" 
+          FROM "documents" 
+          WHERE "lead_id" = ANY($1::int[])
+      `;
+    const fetchDocsResult = await pool.query(fetchDocsQuery, [leadIds]);
+    const documentUrls = fetchDocsResult.rows.map((row) => row.s3_url);
+
+    // Delete documents from S3
+    const deletePromises = documentUrls.map((url) => {
+      const s3Key = decodeURIComponent(new URL(url).pathname.substring(1));
+      console.log("Deleting S3 key:", s3Key);
+      const deleteParams = {
+        Bucket: process.env.S3_BUCKET,
+        Key: s3Key,
+      };
+      return s3Client.send(new DeleteObjectCommand(deleteParams));
+    });
+    await Promise.all(deletePromises);
+    console.log("Deleted documents from S3:", documentUrls);
+
+    // Delete documents from the database
+    const deleteDocsQuery = `
+          DELETE FROM "documents"
+          WHERE "lead_id" = ANY($1::int[])
+      `;
+    await pool.query(deleteDocsQuery, [leadIds]);
+
+    // Delete leads from the database
+    const deleteLeadsQuery = `
+          DELETE FROM "leads"
+          WHERE "id" = ANY($1::int[]) AND "user_id" = $2;
+      `;
+    await pool.query(deleteLeadsQuery, [leadIds, userId]);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log("Error deleting leads and documents:", error);
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;

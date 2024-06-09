@@ -44,10 +44,12 @@ const parsefile = async (req, directoryUrl) => {
 
       // Construct the S3 key for the file
       const url = new URL(directoryUrl);
-      const directoryPath = url.pathname;
-      const s3Key = `${directoryPath}${Date.now().toString()}-${
-        file.originalFilename
-      }`;
+      let directoryPath = url.pathname.replace(/^\/+/, ''); // Remove leading slashes
+      if (!directoryPath.endsWith('/')) {
+        directoryPath += '/';
+      }
+      const s3Key = `${directoryPath}${Date.now().toString()}-${file.originalFilename}`;
+      console.log("Constructed S3 Key:", s3Key);
 
       // Custom file open function to handle the stream
       file.open = async function () {
@@ -116,4 +118,4 @@ const parsefile = async (req, directoryUrl) => {
   });
 };
 
-module.exports = parsefile; // Export the parsefile function
+module.exports = parsefile; // Ex

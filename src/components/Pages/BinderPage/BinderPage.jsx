@@ -210,6 +210,7 @@ export default function BinderPage() {
 
   const deleteSelected = () => {
     dispatch(deleteLeadsRequest(selected));
+    setSelected([]);
   };
 
   // Handle add new lead click
