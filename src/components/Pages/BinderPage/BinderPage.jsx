@@ -35,6 +35,7 @@ import useLeads from "../../../modules/hooks/useLeads";
 import useLeadLoad from "../../../modules/hooks/useLeadLoad";
 import useData from "../../../modules/hooks/useData";
 import "./BinderPage.css";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // Utility function for stable sorting
 const stableSort = (array, comparator) => {
@@ -249,6 +250,13 @@ export default function BinderPage() {
     [order, orderBy, page, rowsPerPage, rowsData]
   );
 
+  const deleteRow = (id) => {
+    dispatch(deleteLeadsRequest([id]));
+  };
+
+  // State to track hovered row
+  const [hoveredRow, setHoveredRow] = useState(null);
+
   return (
     <div className="container">
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -279,7 +287,13 @@ export default function BinderPage() {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow hover tabIndex={-1} key={row.id}>
+                  <TableRow
+                    hover
+                    tabIndex={-1}
+                    key={row.id}
+                    onMouseEnter={() => setHoveredRow(row.id)}
+                    onMouseLeave={() => setHoveredRow(null)}
+                  >
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
@@ -320,28 +334,37 @@ export default function BinderPage() {
                     <TableCell align="left">{row.company}</TableCell>
                     <TableCell align="left">{row.location}</TableCell>
                     <TableCell align="left">{row.type}</TableCell>
-                    <TableCell
-                      align="left"
-                      onClick={() => openNotes(row)}
-                      sx={{
-                        cursor: "pointer",
-                        color: "darkblue",
-                        "&:hover": { color: "blue" },
-                      }}
-                    >
-                      View Notes
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      onClick={() => openDescription(row)}
-                      sx={{
-                        cursor: "pointer",
-                        color: "darkblue",
-                        "&:hover": { color: "blue" },
-                      }}
-                    >
-                      View Description
-                    </TableCell>
+                    {row.notes === "" ? (
+                      <TableCell></TableCell>
+                    ) : (
+                      <TableCell
+                        align="left"
+                        onClick={() => openNotes(row)}
+                        sx={{
+                          cursor: "pointer",
+                          color: "darkblue",
+                          "&:hover": { color: "blue" },
+                        }}
+                      >
+                        View Notes
+                      </TableCell>
+                    )}
+
+                    {row.description === "" ? (
+                      <TableCell></TableCell>
+                    ) : (
+                      <TableCell
+                        align="left"
+                        onClick={() => openDescription(row)}
+                        sx={{
+                          cursor: "pointer",
+                          color: "darkblue",
+                          "&:hover": { color: "blue" },
+                        }}
+                      >
+                        View Description
+                      </TableCell>
+                    )}
                     <TableCell align="left">
                       {row.document === null ? (
                         ""
@@ -357,8 +380,27 @@ export default function BinderPage() {
                     </TableCell>
                     <TableCell>
                       <Tooltip title="Edit">
-                        <IconButton onClick={() => openEdit(row)}>
+                        <IconButton
+                          onClick={() => openEdit(row)}
+                          style={{
+                            visibility:
+                              hoveredRow === row.id ? "visible" : "hidden",
+                          }}
+                        >
                           <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title="Delete">
+                        <IconButton
+                          onClick={() => deleteRow(row.id)}
+                          style={{
+                            visibility:
+                              hoveredRow === row.id ? "visible" : "hidden",
+                          }}
+                        >
+                          <DeleteIcon />
                         </IconButton>
                       </Tooltip>
                     </TableCell>

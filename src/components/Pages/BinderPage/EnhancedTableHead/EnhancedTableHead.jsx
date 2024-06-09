@@ -89,6 +89,7 @@ export default function EnhancedTableHead(props) {
             </IconButton>
           </Tooltip>
         </TableCell>
+        <TableCell></TableCell>
       </TableRow>
     </TableHead>
   );

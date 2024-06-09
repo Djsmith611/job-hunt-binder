@@ -25,21 +25,28 @@ export default function Nav() {
               Dashboard
             </Link>
             <Divider
-          orientation="vertical"
-          variant="middle"
-          flexItem
-          sx={{ bgcolor: "grey", width: "1px" }}
-        />
+              orientation="vertical"
+              variant="middle"
+              flexItem
+              sx={{ bgcolor: "grey", width: "1px" }}
+            />
 
             <Link className="navLink" to="/binder">
               Binder
             </Link>
             <Divider
-          orientation="vertical"
-          variant="middle"
-          flexItem
-          sx={{ bgcolor: "grey", width: "1px" }}
-        />
+              orientation="vertical"
+              variant="middle"
+              flexItem
+              sx={{ bgcolor: "grey", width: "1px" }}
+            />
+            <Link className="navLink" to="/analytics">Analytics</Link>
+            <Divider
+              orientation="vertical"
+              variant="middle"
+              flexItem
+              sx={{ bgcolor: "grey", width: "1px" }}
+            />
           </>
         )}
         <Link className="navLink" to="/about">
@@ -68,11 +75,11 @@ export default function Nav() {
               Home
             </Link>
             <Divider
-          orientation="vertical"
-          variant="middle"
-          flexItem
-          sx={{ bgcolor: "grey", width: "1px" }}
-        />
+              orientation="vertical"
+              variant="middle"
+              flexItem
+              sx={{ bgcolor: "grey", width: "1px" }}
+            />
             <Link className="navLink" to="/login">
               Login
             </Link>

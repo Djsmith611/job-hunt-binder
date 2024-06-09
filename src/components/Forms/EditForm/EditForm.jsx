@@ -10,7 +10,10 @@ import {
 import { useState, useEffect } from "react";
 import useData from "../../../modules/hooks/useData";
 import { useDispatch } from "react-redux";
-import { updateLeadRequest, uploadDocumentRequest } from "../../../modules/actions/leadActions";
+import {
+  updateLeadRequest,
+  uploadDocumentRequest,
+} from "../../../modules/actions/leadActions";
 
 export default function EditForm({ lead, closeEdit }) {
   const data = useData();
@@ -23,16 +26,16 @@ export default function EditForm({ lead, closeEdit }) {
     locations: locationsOptions = [],
   } = data;
 
-  const [id, setId] = useState(lead?.id || 1)
+  const [id, setId] = useState(lead?.id || 1);
   const [title, setTitle] = useState(lead?.title || "");
   const [status, setStatus] = useState(
-    statusOptions.find(option => option.name === lead?.status)?.id || ""
+    statusOptions.find((option) => option.name === lead?.status)?.id || ""
   );
   const [field, setField] = useState(lead?.field || "");
   const [company, setCompany] = useState(lead?.company || "");
   const [location, setLocation] = useState(lead?.location || "");
   const [type, setType] = useState(
-    typeOptions.find(option => option.name === lead?.type)?.id || ""
+    typeOptions.find((option) => option.name === lead?.type)?.id || ""
   );
   const [notes, setNotes] = useState(lead?.notes || "");
   const [description, setDescription] = useState(lead?.description || "");
@@ -40,13 +43,17 @@ export default function EditForm({ lead, closeEdit }) {
 
   useEffect(() => {
     if (lead && statusOptions.length && typeOptions.length) {
-      setId(lead.id || 1)
+      setId(lead.id || 1);
       setTitle(lead.title || "");
-      setStatus(statusOptions.find(option => option.name === lead.status)?.id || "");
+      setStatus(
+        statusOptions.find((option) => option.name === lead.status)?.id || ""
+      );
       setField(lead.field || "");
       setCompany(lead.company || "");
       setLocation(lead.location || "");
-      setType(typeOptions.find(option => option.name === lead.type)?.id || "");
+      setType(
+        typeOptions.find((option) => option.name === lead.type)?.id || ""
+      );
       setNotes(lead.notes || "");
       setDescription(lead.description || "");
     }
@@ -60,8 +67,12 @@ export default function EditForm({ lead, closeEdit }) {
       title: titlesOptions.find((option) => option.name === title)?.id || title,
       status: status,
       field: fieldsOptions.find((option) => option.name === field)?.id || field,
-      company: companiesOptions.find((option) => option.name === company)?.id || company,
-      location: locationsOptions.find((option) => option.name === location)?.id || location,
+      company:
+        companiesOptions.find((option) => option.name === company)?.id ||
+        company,
+      location:
+        locationsOptions.find((option) => option.name === location)?.id ||
+        location,
       type: type,
       notes: notes,
       description: description,
@@ -82,8 +93,9 @@ export default function EditForm({ lead, closeEdit }) {
     sendLead();
     if (document) {
       const formData = new FormData();
-      formData.append('document', document);
+      formData.append("document", document);
       dispatch(uploadDocumentRequest(formData, id));
+      setDocument(null);
     }
     handleClose();
   };
@@ -208,11 +220,7 @@ export default function EditForm({ lead, closeEdit }) {
       >
         Add your Resume (optional)
       </Typography>
-      <TextField
-        type="file"
-        onChange={handleDocumentChange}
-        fullWidth
-      />
+      <TextField type="file" onChange={handleDocumentChange} fullWidth />
       <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 2 }}>
         <Button
           variant="text"

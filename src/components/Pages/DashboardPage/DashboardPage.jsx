@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchUserRequest } from "../../../modules/actions/loginActions";
 import FolderButton from "../../Util/Buttons/FolderButton/FolderButton";
+import JobHuntFunnel from "../AnalyticsPage/jobHuntFunnel";
+import { Grid } from "@mui/material";
 
 const days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
@@ -83,7 +85,6 @@ export default function Dashboard() {
     };
 
     fetchReadyCount();
-
   }, [user.date_created]);
 
   useEffect(() => {
@@ -113,36 +114,70 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="dash-cont">
-        <div className="message-box">
-          <h3 className="message-one">
-            You've been searching for{" "}
-            <span className="message-count">
-              {huntLength} {huntLength === 1 ? "day" : "days"}
-            </span>
-            , with{" "}
-            <span className="message-count">{appliedCount} applications</span>.
-          </h3>
-        </div>
-        <div className="message-box">
-          <h3 className="message-one">
-            <span className="message-count">
-              {readyCount} {readyCount === 1 ? "job" : "jobs"}
-            </span>{" "}
-             marked ready to apply.
-          </h3>
-        </div>
-        <div className="button-cont">
-          <FolderButton
-            text="Binder"
-            clickFunction={() => navigate("/binder")}
-          />
-          <FolderButton
-            text="Analytics"
-            clickFunction={() => navigate("/analytics")}
-          />
-        </div>
-      </div>
+      <div className="dash-cont"></div>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <div className="message-box">
+            <h3 className="message">
+              You've been searching for{" "}
+              <span className="message-count">
+                {huntLength} {huntLength === 1 ? "day" : "days"}
+              </span>
+              , with{" "}
+              <span className="message-count">{appliedCount} applications</span>
+              .
+            </h3>
+          </div>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <div className="message-box">
+            <h3 className="message">
+              <span className="message-count">
+                {readyCount} {readyCount === 1 ? "job" : "jobs"}
+              </span>{" "}
+              marked ready to apply.
+            </h3>
+          </div>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <div className="message-box">
+            <JobHuntFunnel />
+          </div>
+        </Grid>
+        <Grid item xs={12} md={6} sx={{display:"flex", flexDirection:"column",justifyContent:"space-between"}}>
+          <div className="message-box" style={{ marginBottom: "15px", height:"40%" }}>
+            <h3 class="message" style={{ textAlign: "left" }}>
+              The Binder is your hub for storing and tracking job
+              applications. Here, you can organize and manage the jobs you are
+              interested in, view detailed information about each opportunity,
+              and keep track of your application status. Whether you're actively
+              applying or simply bookmarking potential leads, the Binder ensures
+              you stay on top of your job search process.
+            </h3>
+            <FolderButton
+              text="Binder"
+              clickFunction={() => navigate("/binder")}
+            />
+          </div>
+
+          <div className="message-box">
+            <h3 class="message" style={{ textAlign: "left" }}>
+              The Analytics page provides comprehensive insights into your job
+              search activities. Here, you can visualize key metrics such as the
+              number of applications submitted, interviews scheduled, and job
+              offers received. Track your progress over time and analyze your
+              job hunt funnel to identify areas for improvement. The Analytics
+              page helps you stay informed and make data-driven decisions in
+              your job search journey.
+            </h3>
+            <FolderButton
+              text="Analytics"
+              clickFunction={() => navigate("/analytics")}
+            />
+          </div>
+        </Grid>
+      </Grid>
     </div>
   );
 }

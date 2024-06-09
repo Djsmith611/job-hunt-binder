@@ -12,11 +12,12 @@ const userRouter = require('./routes/user.router');
 const uploadRouter = require('./routes/upload.router');
 const leadsRouter = require('./routes/leads.router');
 const dataRouter = require('./routes/data.router');
+const analyticsRouter = require('./routes/analytics.router');
 
 // Express Middleware
 app.set('json spaces', 5); // to prettify json response
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('build', { index: false }));
 
 // Passport Session Configuration
@@ -31,6 +32,7 @@ app.use('/api/user', userRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/leads', leadsRouter);
 app.use('/api/data', dataRouter);
+app.use('/api/analytics', analyticsRouter);
 
 // Listen Server & Port
 app.listen(PORT, () => {

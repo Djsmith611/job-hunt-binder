@@ -111,14 +111,10 @@
     text-align: center;
   }
   
-  .message-one {
+  .message {
     color: rgba(0, 0, 0, 0.514);
   }
-  
-  .message-two {
-    color: rgba(0, 0, 0, 0.514);
-  }
-  
+
   .message-count {
     color: rgb(0, 0, 0);
     font-size: 25px;
@@ -134,13 +130,13 @@
   }
   
   .message-box {
-    width: fit-content;
     padding: 20px;
     border-radius: 15px;
     background-color: #00000005;
     border: solid rgba(0, 0, 0, 0.1) 1px;
     box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.229);
     transition: all 0.3s ease;
+    text-align: center;
   }
 
   .message-box:hover {

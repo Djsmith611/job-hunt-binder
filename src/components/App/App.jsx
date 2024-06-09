@@ -7,10 +7,10 @@ import {
   Navigate,
 } from "react-router-dom";
 import Nav from "./Nav/Nav";
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import Footer from "./Footer/Footer";
 import { useDispatch } from "react-redux";
 import BinderPage from "../Pages/BinderPage/BinderPage.jsx";
@@ -19,6 +19,7 @@ import DashboardPage from "../Pages/DashboardPage/DashboardPage";
 import useUser from "../../modules/hooks/useUser";
 import LandingPage from "../Pages/LandingPage/LandingPage";
 import LoginPage from "../Pages/LoginPage/LoginPage";
+import AnalyticsPage from "../Pages/AnalyticsPage/AnalyticsPage.jsx";
 import Resources from "../Pages/ResourcesPage/ResourcesPage";
 import ProtectedRoute from "../Util/ProtectedRoute/ProtectedRoute";
 import RegisterPage from "../Pages/RegisterPage/RegisterPage";
@@ -58,8 +59,18 @@ export default function App() {
             }
           />
           <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <AnalyticsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/login"
-            element={user.id ? <Navigate to="/dashboard" replace /> : <LoginPage />}
+            element={
+              user.id ? <Navigate to="/dashboard" replace /> : <LoginPage />
+            }
           />
           <Route
             path="/register"
