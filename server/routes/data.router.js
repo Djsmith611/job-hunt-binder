@@ -1,12 +1,15 @@
 const express = require("express");
 const {
   rejectUnauthenticated,
-} = require("../modules/authentication-middleware"); // Authenticator
-const pool = require("../modules/pool"); // Database connection
+} = require("../modules/authentication-middleware"); // Middleware for authentication
+const pool = require("../modules/pool"); // Database connection pool
 
 const router = express.Router();
 
 /****************** GET APPLICATIONS PER DAY FOR TRACKER ***************************/
+/**
+ * Route to get the number of applications per day within a specified date range for the authenticated user.
+ */
 router.get("/tracker", rejectUnauthenticated, (req, res) => {
   const userId = req.user.id; // Get the user ID from the authenticated user
   const startDay = req.query.startDay; // Get the start day from query parameters
@@ -14,17 +17,16 @@ router.get("/tracker", rejectUnauthenticated, (req, res) => {
 
   // SQL query to count applications for each day within the date range
   const queryText = `
-      SELECT
-        to_char("app_date", 'Day') AS "day", -- Format the app_date to return the day of the week
-        COUNT(*) AS "applications" -- Count the number of applications for each day
-      FROM "leads"
-      WHERE "user_id" = $1 AND "app_date" BETWEEN $2 AND $3 -- Filter by user_id and date range
-      GROUP BY to_char("app_date", 'Day'), to_char("app_date", 'D') -- Group by day of the week and order by day of the week
-      ORDER BY to_char("app_date", 'D'); -- Order by day of the week
-    `;
+    SELECT
+      to_char("app_date", 'Day') AS "day", -- Format the app_date to return the day of the week
+      COUNT(*) AS "applications" -- Count the number of applications for each day
+    FROM "leads"
+    WHERE "user_id" = $1 AND "app_date" BETWEEN $2 AND $3 -- Filter by user_id and date range
+    GROUP BY to_char("app_date", 'Day'), to_char("app_date", 'D') -- Group by day of the week and order by day of the week
+    ORDER BY to_char("app_date", 'D'); -- Order by day of the week
+  `;
 
-  // Query values to be used in the SQL query
-  const queryValues = [userId, startDay, endDay];
+  const queryValues = [userId, startDay, endDay]; // Values to be used in the SQL query
 
   // Execute the SQL query
   pool
@@ -43,7 +45,6 @@ router.get("/tracker", rejectUnauthenticated, (req, res) => {
 
       // Map the results to ensure each day of the week is included, even if there are no applications for that day
       const applicationsPerDay = days.map((day) => {
-        // Find the data for the current day
         const dayData = result.rows.find((row) => row.day.trim() === day);
         return {
           day,
@@ -51,42 +52,44 @@ router.get("/tracker", rejectUnauthenticated, (req, res) => {
         };
       });
 
-      // Send the resulting array as JSON response
-      res.json(applicationsPerDay);
+      res.json(applicationsPerDay); // Send the resulting array as JSON response
     })
     .catch((err) => {
-      // Handle any errors that occur during the query execution
-      console.error("Error retrieving tracker data:", err);
+      console.error("Error retrieving tracker data:", err); // Handle any errors that occur during the query execution
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
 });
 
 /********************** GET ALL TYPES *********************/
+/**
+ * Route to get all types of leads.
+ */
 router.get("/types", rejectUnauthenticated, (req, res) => {
-  // Query will select all types
   const queryText = `
-      SELECT *
-      FROM "type"
-      ORDER BY "id";
-    `; // Ordered by id for organization
+    SELECT *
+    FROM "type"
+    ORDER BY "id"; -- Ordered by id for organization
+  `;
 
   pool
     .query(queryText)
-    .then((result) => res.status(200).json(result.rows)) // 200(OK) // Sending results 
+    .then((result) => res.status(200).json(result.rows)) // 200(OK) // Sending results
     .catch((err) => {
       console.error("Error fetching types:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); /* END */
+});
 
 /********************** GET ALL COMPANIES *********************/
+/**
+ * Route to get all companies.
+ */
 router.get("/companies", rejectUnauthenticated, (req, res) => {
-  // Query will select all companies
   const queryText = `
-      SELECT *
-      FROM "company"
-      ORDER BY "name";
-    `; // Ordered by name for organization
+    SELECT *
+    FROM "company"
+    ORDER BY "name"; -- Ordered by name for organization
+  `;
 
   pool
     .query(queryText)
@@ -95,17 +98,20 @@ router.get("/companies", rejectUnauthenticated, (req, res) => {
       console.error("Error fetching companies:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); //* END */
+});
 
 /********************** ADD NEW COMPANY ***********************/
+/**
+ * Route to add a new company.
+ */
 router.post("/company", rejectUnauthenticated, (req, res) => {
   const company = req.body.company; // Pulling company from req.body
-  // Query will add a new company to the database
   const queryText = `
-      INSERT INTO "company"("name")
-      VALUES($1)
-      RETURNING "id";
-    `; // Returning id to be sent to client and sent with upcoming request
+    INSERT INTO "company"("name")
+    VALUES($1)
+    RETURNING "id"; -- Returning id to be sent to client and sent with upcoming request
+  `;
+
   pool
     .query(queryText, [company])
     .then((result) => res.status(201).json(result.rows[0].id)) // 201(CREATED) // Sending created id of company
@@ -113,16 +119,18 @@ router.post("/company", rejectUnauthenticated, (req, res) => {
       console.error("Error posting company:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); /* END */
+});
 
 /********************** GET ALL LOCATIONS *********************/
+/**
+ * Route to get all locations.
+ */
 router.get("/locations", rejectUnauthenticated, (req, res) => {
-  // Query will select all locations
   const queryText = `
-      SELECT *
-      FROM "location"
-      ORDER BY "name";
-    `; // Ordered by name for organization
+    SELECT *
+    FROM "location"
+    ORDER BY "name"; -- Ordered by name for organization
+  `;
 
   pool
     .query(queryText)
@@ -131,17 +139,19 @@ router.get("/locations", rejectUnauthenticated, (req, res) => {
       console.error("Error fetching locations:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); /* END */
+});
 
 /********************** ADD NEW LOCATION ***********************/
+/**
+ * Route to add a new location.
+ */
 router.post("/location", rejectUnauthenticated, (req, res) => {
   const location = req.body.location; // Pulling location from req.body
-  // Query will add a location to the database
   const queryText = `
-      INSERT INTO "location"("name")
-      VALUES($1)
-      RETURNING "id";
-    `; // Returning id to be sent to client and sent with upcoming request
+    INSERT INTO "location"("name")
+    VALUES($1)
+    RETURNING "id"; -- Returning id to be sent to client and sent with upcoming request
+  `;
 
   pool
     .query(queryText, [location])
@@ -150,16 +160,18 @@ router.post("/location", rejectUnauthenticated, (req, res) => {
       console.error("Error posting location:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); /* END */
+});
 
 /********************** GET ALL STATUSES *********************/
+/**
+ * Route to get all statuses.
+ */
 router.get("/statuses", rejectUnauthenticated, (req, res) => {
-  // Query will select all statuses
   const queryText = `
-      SELECT *
-      FROM "status"
-      ORDER BY "id";
-    `; // Ordered by id for organization
+    SELECT *
+    FROM "status"
+    ORDER BY "id"; -- Ordered by id for organization
+  `;
 
   pool
     .query(queryText)
@@ -171,13 +183,15 @@ router.get("/statuses", rejectUnauthenticated, (req, res) => {
 });
 
 /********************** GET ALL TITLES *********************/
+/**
+ * Route to get all titles.
+ */
 router.get("/titles", rejectUnauthenticated, (req, res) => {
-  // Query will select all titles
   const queryText = `
-      SELECT *
-      FROM "title"
-      ORDER BY "name";
-    `; // Ordered by name for organization
+    SELECT *
+    FROM "title"
+    ORDER BY "name"; -- Ordered by name for organization
+  `;
 
   pool
     .query(queryText)
@@ -186,17 +200,20 @@ router.get("/titles", rejectUnauthenticated, (req, res) => {
       console.error("Error fetching titles:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); /* END */
+});
 
 /********************** ADD NEW TITLE ***********************/
+/**
+ * Route to add a new title.
+ */
 router.post("/title", rejectUnauthenticated, (req, res) => {
   const title = req.body.title; // Pulling title from req.body
-  // Query will add new title to database
   const queryText = `
-      INSERT INTO "title"("name")
-      VALUES($1)
-      RETURNING "id";
-    `; // Returning id to be sent to client and added into upcoming request
+    INSERT INTO "title"("name")
+    VALUES($1)
+    RETURNING "id"; -- Returning id to be sent to client and added into upcoming request
+  `;
+
   pool
     .query(queryText, [title])
     .then((result) => res.status(201).json(result.rows[0].id)) // 201(CREATED) // Sending created title id
@@ -204,15 +221,17 @@ router.post("/title", rejectUnauthenticated, (req, res) => {
       console.error("Error posting title:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); /* END */
+});
 
 /********************** GET ALL FIELDS *********************/
+/**
+ * Route to get all fields.
+ */
 router.get("/fields", rejectUnauthenticated, (req, res) => {
-  // Query will select all fields
   const queryText = `
-      SELECT *
-      FROM "field";
-    `;
+    SELECT *
+    FROM "field";
+  `;
 
   pool
     .query(queryText)
@@ -221,17 +240,20 @@ router.get("/fields", rejectUnauthenticated, (req, res) => {
       console.error("Error fetching fields:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); /* END */
+});
 
 /********************** ADD NEW FIELD ***********************/
+/**
+ * Route to add a new field.
+ */
 router.post("/field", rejectUnauthenticated, (req, res) => {
   const field = req.body.field; // Pulling field from req.body
-  // Query will add field to database
   const queryText = `
-      INSERT INTO "field"("name")
-      VALUES($1)
-      RETURNING "id";
-    `; // Returning id to be sent to client and sent with upcoming request
+    INSERT INTO "field"("name")
+    VALUES($1)
+    RETURNING "id"; -- Returning id to be sent to client and sent with upcoming request
+  `;
+
   pool
     .query(queryText, [field])
     .then((result) => res.status(201).json(result.rows[0].id)) // 201(CREATED) // Sending created field id
@@ -239,9 +261,12 @@ router.post("/field", rejectUnauthenticated, (req, res) => {
       console.error("Error posting field:", err);
       res.status(500).send("Server error"); // 500(INTERNAL SERVER ERROR)
     });
-}); /* END */
+});
 
 /********************** READY COUNT ***********************/
+/**
+ * Route to get the count of ready leads for the authenticated user.
+ */
 router.get("/ready", rejectUnauthenticated, (req, res) => {
   const userId = req.user.id;
   const queryText = `
@@ -253,13 +278,12 @@ router.get("/ready", rejectUnauthenticated, (req, res) => {
   pool
     .query(queryText, [userId])
     .then((result) => {
-      // console.log(result.rows[0].readycount);
-      res.status(200).send(result.rows[0].readycount);
+      res.status(200).send(result.rows[0].readycount); // Send the count of ready leads
     })
     .catch((error) => {
       console.error(error);
-      res.sendStatus(500);
-    })
+      res.sendStatus(500); // 500(INTERNAL SERVER ERROR)
+    });
 });
 
-module.exports = router;
+module.exports = router; // Export the router for use in other parts of the application
