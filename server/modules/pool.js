@@ -1,35 +1,23 @@
-/* the only line you likely need to change is
+const pg = require('pg'); // Import the pg (node-postgres) module for interacting with PostgreSQL
+let pool; // Initialize a variable to hold the database connection pool
 
- database: 'prime_app',
-
- change `prime_app` to the name of your database, and you should be all set!
-*/
-
-const pg = require('pg');
-let pool;
-
-// When our app is deployed to the internet 
-// we'll use the DATABASE_URL environment variable
-// to set the connection info: web address, username/password, db name
-// eg: 
-//  DATABASE_URL=postgresql://jDoe354:secretPw123@some.db.com/prime_app
+// Check if the DATABASE_URL environment variable is set
 if (process.env.DATABASE_URL) {
+    // If DATABASE_URL is set, create a new pool with the connection string
+    // and configure SSL settings for secure connections
     pool = new pg.Pool({
         connectionString: process.env.DATABASE_URL,
         ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: false // Allow self-signed certificates
         }
     });
-}
-// When we're running this app on our own computer
-// we'll connect to the postgres database that is 
-// also running on our computer (localhost)
-else {
+} else {
+    // If DATABASE_URL is not set, create a new pool with local PostgreSQL settings
     pool = new pg.Pool({
-        host: 'localhost',
-        port: 5432,
-        database: 'job_hunt_binder',   // 	💥 Change this to the name of your database!
+        host: 'localhost', // Localhost as the database server
+        port: 5432, // Default PostgreSQL port
+        database: 'job_hunt_binder', // Database name
     });
 }
 
-module.exports = pool;
+module.exports = pool; // Export the pool for use in other parts of the application
