@@ -17,7 +17,6 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -28,7 +27,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ChartDataLabels // Register datalabels plugin
+  ChartDataLabels
 );
 
 const AnalyticsPage = () => {
@@ -96,7 +95,7 @@ const AnalyticsPage = () => {
   };
 
   return (
-    <Box sx={{ padding: 4 }}>
+    <div className="container" style={{margin:"auto", width:"60%"}}>
       <Typography variant="h4" gutterBottom>
         Analytics Dashboard
       </Typography>
@@ -133,7 +132,7 @@ const AnalyticsPage = () => {
                     borderRadius: 3,
                     padding: 5,
                     font: {
-                      size: 16, // Adjust the font size here
+                      size: 16,
                       weight: 'bold',
                     },
                   },
@@ -181,7 +180,7 @@ const AnalyticsPage = () => {
                     formatter: (value) => value,
                     color: 'black',
                     font: {
-                      size: 16, // Adjust the font size here
+                      size: 16,
                       weight: 'bold',
                     },
                   },
@@ -234,7 +233,7 @@ const AnalyticsPage = () => {
                     formatter: (value) => value,
                     color: 'black',
                     font: {
-                      size: 16, // Adjust the font size here
+                      size: 16,
                       weight: 'bold',
                     },
                   },
@@ -250,7 +249,7 @@ const AnalyticsPage = () => {
           </Box>
         </Grid>
       </Grid>
-    </Box>
+    </div>
   );
 };
 

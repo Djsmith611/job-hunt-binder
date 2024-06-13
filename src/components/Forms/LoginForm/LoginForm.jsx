@@ -20,7 +20,7 @@ export default function LoginForm() {
     } else {
       inputError();
     }
-  }; // end login
+  };
 
   return (
     <form className="formPanel" onSubmit={handleLogin}>

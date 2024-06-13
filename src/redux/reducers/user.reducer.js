@@ -4,7 +4,6 @@ const initialState = {};
 
 // Logged in user object
 const userReducer = (state = initialState, action) => {
-  // state.user
   const value = action.payload;
   switch (action.type) {
     case SET_USER:

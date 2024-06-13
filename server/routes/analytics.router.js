@@ -67,7 +67,7 @@ router.get("/funnel", rejectUnauthenticated, async (req, res) => {
     const jobsSavedQuery = `SELECT COUNT(*) FROM "leads" WHERE "user_id" = $1`;
     const applicationsQuery = `SELECT COUNT(*) FROM "leads" WHERE "user_id" = $1 AND "status_id" >= 2`;
     const interviewsQuery = `SELECT COUNT(*) FROM "leads" WHERE "user_id" = $1 AND "status_id" >= 3`;
-    const offersQuery = `SELECT COUNT(*) FROM "leads" WHERE "user_id" = $1 AND "status_id" >= 4`;
+    const offersQuery = `SELECT COUNT(*) FROM "leads" WHERE "user_id" = $1 AND "status_id" >= 6`;
 
     const [jobsSavedResult, applicationsResult, interviewsResult, offersResult] = await Promise.all([
       pool.query(jobsSavedQuery, [userId]),

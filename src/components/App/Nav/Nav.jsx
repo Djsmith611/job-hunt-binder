@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Divider, Box } from "@mui/material";
 
 export default function Nav() {
-  const user = useSelector((store) => store.user);
+  const user = useSelector((state) => state.user);
 
   return (
     <div className="nav">
@@ -13,12 +13,19 @@ export default function Nav() {
         <h2 className="nav-title">Job Hunt Binder</h2>
       </Link>
       <div className="nav-links">
-        <Divider
-          orientation="vertical"
-          variant="middle"
-          flexItem
-          sx={{ bgcolor: "grey", width: "1px" }}
-        />
+        {!user.id && (
+          <>
+            <Link className="navLink" to="/home">
+              Home
+            </Link>
+            <Divider
+              orientation="vertical"
+              variant="middle"
+              flexItem
+              sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
+            />
+          </>
+        )}
         {user.id && (
           <>
             <Link className="navLink" to="/dashboard">
@@ -28,7 +35,7 @@ export default function Nav() {
               orientation="vertical"
               variant="middle"
               flexItem
-              sx={{ bgcolor: "grey", width: "1px" }}
+              sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
             />
 
             <Link className="navLink" to="/binder">
@@ -38,14 +45,16 @@ export default function Nav() {
               orientation="vertical"
               variant="middle"
               flexItem
-              sx={{ bgcolor: "grey", width: "1px" }}
+              sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
             />
-            <Link className="navLink" to="/analytics">Analytics</Link>
+            <Link className="navLink" to="/analytics">
+              Analytics
+            </Link>
             <Divider
               orientation="vertical"
               variant="middle"
               flexItem
-              sx={{ bgcolor: "grey", width: "1px" }}
+              sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
             />
           </>
         )}
@@ -56,39 +65,27 @@ export default function Nav() {
           orientation="vertical"
           variant="middle"
           flexItem
-          sx={{ bgcolor: "grey", width: "1px" }}
+          sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
         />
         <Link className="navLink" to="/resources">
           Resources
         </Link>
-        <Divider
-          orientation="vertical"
-          variant="middle"
-          flexItem
-          sx={{ bgcolor: "grey", width: "1px" }}
-        />
-        {/* If no user is logged in, show these links */}
-        {!user.id && (
-          // If there's no user, show login/registration links
-          <>
-            <Link className="navLink" to="/home">
-              Home
-            </Link>
-            <Divider
-              orientation="vertical"
-              variant="middle"
-              flexItem
-              sx={{ bgcolor: "grey", width: "1px" }}
-            />
-            <Link className="navLink" to="/login">
-              Login
-            </Link>
-          </>
-        )}
-
-        {/* If a user is logged in, show these links */}
-        {user.id && <LogOutButton className="navLink" />}
-      </div>
+      </div>{" "}
+      {!user.id && (
+        <div className="sign-in">
+          <Link className="signinLink1" to="/login">
+            Login
+          </Link>
+          <Link className="signinLink2" to="/register" >
+            Register
+          </Link>
+        </div>
+      )}
+      {user.id && (
+        <div className="sign-in">
+          <LogOutButton className="signinLink2"  />
+        </div>
+      )}
     </div>
   );
 }

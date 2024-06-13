@@ -15,7 +15,7 @@ const dataRouter = require('./routes/data.router');
 const analyticsRouter = require('./routes/analytics.router');
 
 // Express Middleware
-app.set('json spaces', 5); // to prettify json response
+// app.set('json spaces', 5); // to prettify json response
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('build', { index: false }));

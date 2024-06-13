@@ -16,7 +16,7 @@ import {
   MenuItem,
   Tooltip,
   IconButton,
-  CircularProgress,
+  CircularProgress, // Was used for loading but removed
 } from "@mui/material";
 import EditForm from "../../Forms/EditForm/EditForm";
 import NewLeadForm from "../../Forms/NewLeadForm/NewLeadForm";
@@ -258,8 +258,8 @@ export default function BinderPage() {
   const [hoveredRow, setHoveredRow] = useState(null);
 
   return (
-    <div className="container">
-      <Paper sx={{ width: "100%", mb: 2 }}>
+    <div className="container" style={{overflow:"hidden"}} >
+      <Paper sx={{  backgroundColor:"#ffffff8d", margin:"30px auto", width:"90%", overflow:"hidden"}}>
         <EnhancedTableToolbar
           numSelected={selected.length}
           handleBatchStatusChange={handleBatchStatusChange}
@@ -293,6 +293,7 @@ export default function BinderPage() {
                     key={row.id}
                     onMouseEnter={() => setHoveredRow(row.id)}
                     onMouseLeave={() => setHoveredRow(null)}
+                    style={{fontSize:"12px"}}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -311,7 +312,7 @@ export default function BinderPage() {
                       <Select
                         value={row.status}
                         variant="standard"
-                        // margin={dense ? "dense" : "none"}
+                        margin={dense ? "dense" : "none"}
                         onChange={(event) =>
                           handleStatusEdit(row.id, event.target.value)
                         }

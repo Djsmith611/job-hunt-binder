@@ -1,28 +1,37 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import useMessage from "../../../modules/hooks/useMessage.js";
 import { registerUserRequest } from "../../../modules/actions/registrationActions.js";
 import { TextField, Typography } from "@mui/material";
 import FolderButton from "../../Util/Buttons/FolderButton/FolderButton.jsx";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [password, setPassword] = useState("");
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const dispatch = useDispatch();
-  const message = useMessage('registration');
+  const message = useMessage("registration");
 
-  const registerUser = (event) => {
+  const registerUser = async (event) => {
     event.preventDefault();
-    console.log(email, fName, lName, password);      
+
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not yet available");
+      return;
+    }
+
+    const recaptchaToken = await executeRecaptcha("register");
+
     const user = {
-        email: email,
-        f_name: fName,
-        l_name: lName,
-        password: password,
-      };
-      console.log(user);
+      email,
+      f_name: fName,
+      l_name: lName,
+      password,
+      recaptchaToken,
+    };
     dispatch(registerUserRequest(user));
   };
 
@@ -37,14 +46,7 @@ export default function RegisterForm() {
         </h3>
       )}
 
-      <div
-        style={{
-          display: "flex",
-          gap: 5,
-          marginBottom: 10,
-          marginTop: 10,
-        }}
-      >
+      <div style={{ display: "flex", gap: 5, marginBottom: 10, marginTop: 10 }}>
         <TextField
           variant="filled"
           value={fName}
@@ -61,14 +63,7 @@ export default function RegisterForm() {
           sx={{ backgroundColor: "white" }}
         />
       </div>
-      <div
-        style={{
-          display: "flex",
-          gap: 5,
-          marginBottom: 10,
-          marginTop: 10,
-        }}
-      >
+      <div style={{ display: "flex", gap: 5, marginBottom: 10, marginTop: 10 }}>
         <TextField
           variant="filled"
           value={email}
@@ -87,12 +82,7 @@ export default function RegisterForm() {
           required
         />
       </div>
-      <div
-        style={{
-          display: "flex",
-          marginTop: 5,
-        }}
-      >
+      <div style={{ display: "flex", marginTop: 5 }}>
         <FolderButton type="submit" text="Register" />
       </div>
     </form>

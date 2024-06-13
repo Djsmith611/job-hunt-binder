@@ -36,4 +36,4 @@ const createUserDirectory = async (userId) => {
   }
 };
 
-module.exports = createUserDirectory; // Export the function for use in other parts of the application
+module.exports = createUserDirectory;

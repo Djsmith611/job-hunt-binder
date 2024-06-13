@@ -1,11 +1,10 @@
 .nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin: 0;
-  background: linear-gradient(to right, #ffffff, #aaa6a6);
+  background: rgba(0, 0, 0, 0);
   overflow: hidden;
-  border-bottom: solid 1px black;
 }
 
 
@@ -13,6 +12,7 @@
   display: flex;
   align-items: center;
   height: 50px;
+  border-bottom: solid 1px black;
 }
 
 
@@ -22,15 +22,19 @@
 }
 
 .nav-title {
+  position: absolute;
+  left: 10px;
+  top: 10px;
   font-size: 24px;
   font-weight: 700;
   color: #000000;
   padding-left: 10px;
   margin: 0;
+  transition: all 0.3s;
 }
 
 .nav-title:hover {
-  color: #ff0000;
+  color: #ff000075;
 }
 
 .navLink {
@@ -44,9 +48,46 @@
   border: none;
   cursor: pointer;
   outline: 0;
-  transition: all 0.5s;
+  transition: all 0.3s;
 }
 
 .navLink:hover {
-  color: rgb(255, 0, 0);
+  color: #ff000075;
+}
+.sign-in {
+  position:absolute;
+  right: 0;
+}
+
+.signinLink1 {
+  display: inline-block;
+  text-align: center;
+  color:black;
+  background-color: transparent;
+  padding: 24px 10px;
+  text-decoration: none;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  outline: 0;
+  transition: all 0.3s;
+}
+.signinLink2 {
+  display: inline-block;
+  text-align: center;
+  color:rgb(255, 255, 255);
+  background-color: black;
+  border-radius: 10px 0 0 10px;
+  padding: 24px 10px;
+  text-decoration: none;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  outline: 0;
+  max-height: 20px;
+  transition: all 0.3s;
+}
+.signinLink2:hover {
+  color:red;
+  background-color: grey;
 }

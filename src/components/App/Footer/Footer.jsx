@@ -4,7 +4,7 @@ import { TextField } from "@mui/material";
 
 export default function Footer() {
   return (
-    <div>
+    <div className="around-footer">
       <div className="footer">
         <div className="footer-section-1">
           <div>

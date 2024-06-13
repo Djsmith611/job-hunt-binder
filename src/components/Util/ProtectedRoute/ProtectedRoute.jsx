@@ -1,11 +1,16 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import useUser from '../../../modules/hooks/useUser';
+import { useSelector } from 'react-redux';
 
 function ProtectedRoute({ element, children }) {
-  const user = useUser();
+  const user = useSelector((state) => state.user);
+  const loading = useSelector((state) => state.loading);
 
-  if (!user.id) {
+  if (loading === true) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user.id && loading === false) {
     return <Navigate to="/login" replace />;
   }
 

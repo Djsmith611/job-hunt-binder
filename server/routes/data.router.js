@@ -27,6 +27,7 @@ router.get("/tracker", rejectUnauthenticated, (req, res) => {
   `;
 
   const queryValues = [userId, startDay, endDay]; // Values to be used in the SQL query
+  console.log(queryValues);
 
   // Execute the SQL query
   pool

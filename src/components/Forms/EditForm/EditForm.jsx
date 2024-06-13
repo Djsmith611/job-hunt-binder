@@ -63,7 +63,7 @@ export default function EditForm({ lead, closeEdit }) {
 
   const sendLead = () => {
     const leadToSend = {
-      id: lead.id, // Ensure you include the ID to update the correct lead
+      id: lead.id,
       title: titlesOptions.find((option) => option.name === title)?.id || title,
       status: status,
       field: fieldsOptions.find((option) => option.name === field)?.id || field,
@@ -114,7 +114,11 @@ export default function EditForm({ lead, closeEdit }) {
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        width: 400,
+        width: "80%",
+        maxWidth: 400,
+        maxHeight: "80vh",
+        overflowY: "auto",
+        margin: "0 auto",
       }}
       onClick={(e) => e.stopPropagation()}
     >
@@ -199,12 +203,22 @@ export default function EditForm({ lead, closeEdit }) {
           <TextField {...params} label="Location" fullWidth />
         )}
       />
+      <Typography
+        variant="body1"
+        style={{ color: "black", textAlign: "center" }}
+      >
+        Description
+      </Typography>
       <TextField
-        label="Description"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         multiline
         fullWidth
+        style={{
+          minHeight: "200px",
+          maxHeight: "400px",
+          overflow: "auto",
+        }}
       />
       <TextField
         label="Notes"
