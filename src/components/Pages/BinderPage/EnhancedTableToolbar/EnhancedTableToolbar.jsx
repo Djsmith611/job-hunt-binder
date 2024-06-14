@@ -25,6 +25,7 @@ export default function EnhancedTableToolbar(props) {
   return (
     <Toolbar
       sx={{
+        borderRadius:"15px 15px 0 0",
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
         ...(numSelected > 0 && {

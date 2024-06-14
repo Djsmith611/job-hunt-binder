@@ -10,6 +10,7 @@ import JobHuntFunnel from "../AnalyticsPage/jobHuntFunnel";
 import useLeads from "../../../modules/hooks/useLeads";
 import { Grid } from "@mui/material";
 import { fetchLeadsRequest } from "../../../modules/actions/leadActions";
+import { motion } from "framer-motion";
 
 const days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
@@ -99,13 +100,19 @@ export default function Dashboard() {
 
   useEffect(() => {
     dispatch(fetchUserRequest());
-    if(user.id) {
+    if (user.id) {
       dispatch(fetchLeadsRequest());
     }
   }, [dispatch]);
 
   return (
-    <div className="dashboard">
+    <motion.div
+      className="dashboard"
+      initial={{ opacity: 0, translateY: 50 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       {/* <h1 className="binder-title">Welcome back, {fullName}!</h1> */}
       <div className="this-week">
         <h1>This Week's Applications</h1>
@@ -127,7 +134,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="dash-cont"></div>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <div className="message-box">
@@ -165,10 +171,10 @@ export default function Dashboard() {
           <div className="message-box">
             <h3 className="message" style={{ textAlign: "left" }}>
               The Binder is where you can store the jobs you are applying to!
-              Here, you can organize and manage the jobs you are interested in and keep track
-              of your application status. Whether you're actively applying or
-              simply bookmarking potential leads, the Binder ensures you stay on
-              top of your job search process.
+              Here, you can organize and manage the jobs you are interested in
+              and keep track of your application status. Whether you're actively
+              applying or simply bookmarking potential leads, the Binder ensures
+              you stay on top of your job search process.
             </h3>
             <FolderButton
               text="Binder"
@@ -188,12 +194,11 @@ export default function Dashboard() {
         >
           <div className="message-box">
             <h3 className="message" style={{ textAlign: "left" }}>
-              The Analytics page provides insights into your job
-              search activities. Here, you can visualize key metrics such as the
-              number of applications submitted, interviews scheduled, and job
-              offers received. The Analytics
-              page helps you stay informed and make data-driven decisions in
-              your job search journey.
+              The Analytics page provides insights into your job search
+              activities. Here, you can visualize key metrics such as the number
+              of applications submitted, interviews scheduled, and job offers
+              received. The Analytics page helps you stay informed and make
+              data-driven decisions in your job search journey.
             </h3>
             <FolderButton
               text="Analytics"
@@ -203,13 +208,15 @@ export default function Dashboard() {
         </Grid>{" "}
         <Grid item xs={12} md={6}>
           <div className="message-box">
-            {
-              leads.length <= 0 && <p style={{color:"red"}}>Add a lead and watch your data grow!</p>
-            }
+            {leads.length <= 0 && (
+              <p style={{ color: "red" }}>
+                Add a lead and watch your data grow!
+              </p>
+            )}
             <JobHuntFunnel />
           </div>
         </Grid>
       </Grid>
-    </div>
+    </motion.div>
   );
 }

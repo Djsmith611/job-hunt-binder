@@ -18,12 +18,12 @@ export default function Nav() {
             <Link className="navLink" to="/home">
               Home
             </Link>
-            <Divider
+            {/* <Divider
               orientation="vertical"
               variant="middle"
               flexItem
               sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
-            />
+            /> */}
           </>
         )}
         {user.id && (
@@ -31,42 +31,42 @@ export default function Nav() {
             <Link className="navLink" to="/dashboard">
               Dashboard
             </Link>
-            <Divider
+            {/* <Divider
               orientation="vertical"
               variant="middle"
               flexItem
               sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
-            />
+            /> */}
 
             <Link className="navLink" to="/binder">
               Binder
             </Link>
-            <Divider
+            {/* <Divider
               orientation="vertical"
               variant="middle"
               flexItem
               sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
-            />
+            /> */}
             <Link className="navLink" to="/analytics">
               Analytics
             </Link>
-            <Divider
+            {/* <Divider
               orientation="vertical"
               variant="middle"
               flexItem
               sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
-            />
+            /> */}
           </>
         )}
         <Link className="navLink" to="/about">
           About
         </Link>
-        <Divider
+        {/* <Divider
           orientation="vertical"
           variant="middle"
           flexItem
           sx={{ bgcolor: "rgb(168, 168, 168)", width: "1px" }}
-        />
+        /> */}
         <Link className="navLink" to="/resources">
           Resources
         </Link>

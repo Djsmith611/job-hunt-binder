@@ -2,12 +2,20 @@ import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
 import { Box, Typography } from "@mui/material";
 import ParallaxButton from "../../Util/Buttons/ParallaxButton/ParallaxButton";
+import { motion } from "framer-motion";
 
 export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="container" style={{margin:"30px auto", width:"60%"}}>
+    <motion.div
+      className="container"
+      style={{ margin: "30px auto", width: "60%" }}
+      initial={{ opacity: 0, translateY: 0 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <Box
         className="ImageHeader"
         style={{
@@ -21,7 +29,13 @@ export default function LandingPage() {
           <h2>Streamline Your Job Search</h2>
           <h5 className="subheader">Start tracking your applications</h5>
           <div className="button-container">
-            <ParallaxButton text="Learn More" className="learn-more-button" onClickFunction={()=>{navigate('/about')}}/>
+            <ParallaxButton
+              text="Learn More"
+              className="learn-more-button"
+              onClickFunction={() => {
+                navigate("/about");
+              }}
+            />
           </div>
         </div>
       </Box>
@@ -87,6 +101,6 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

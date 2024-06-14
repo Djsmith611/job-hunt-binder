@@ -36,6 +36,8 @@ import useLeadLoad from "../../../modules/hooks/useLeadLoad";
 import useData from "../../../modules/hooks/useData";
 import "./BinderPage.css";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { motion } from "framer-motion";
+
 
 // Utility function for stable sorting
 const stableSort = (array, comparator) => {
@@ -258,8 +260,12 @@ export default function BinderPage() {
   const [hoveredRow, setHoveredRow] = useState(null);
 
   return (
-    <div className="container" style={{overflow:"hidden"}} >
-      <Paper sx={{  backgroundColor:"#ffffff8d", margin:"30px auto", width:"90%", overflow:"hidden"}}>
+    <motion.div className="container" style={{ margin: "30px auto", width: "90%" }} 
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.3 }}>
+      <Paper sx={{  backgroundColor:"#e9f1f1", boxShadow:"1px 1px 15px rgba(0, 0, 0, 0.229)", borderRadius:"15px" }}>
         <EnhancedTableToolbar
           numSelected={selected.length}
           handleBatchStatusChange={handleBatchStatusChange}
@@ -514,6 +520,6 @@ export default function BinderPage() {
           </Typography>
         </Box>
       </Backdrop>
-    </div>
+    </motion.div>
   );
 }

@@ -3,12 +3,15 @@ import { logoutRequest } from "../../../../modules/actions/loginActions";
 
 export default function LogOutButton(props) {
   const dispatch = useDispatch();
+  const logout = () => {
+    dispatch(logoutRequest())
+  }
   return (
-    <button
+    <div
       className={props.className}
-      onClick={() => dispatch(logoutRequest())}
+      onClick={() => logout()}
     >
       Log Out
-    </button>
+    </div>
   );
 }

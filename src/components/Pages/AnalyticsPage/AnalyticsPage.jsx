@@ -16,6 +16,7 @@ import {
   Legend,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { motion } from "framer-motion";
 
 ChartJS.register(
   CategoryScale,
@@ -95,7 +96,11 @@ const AnalyticsPage = () => {
   };
 
   return (
-    <div className="container" style={{margin:"auto", width:"60%"}}>
+    <motion.div className="container" style={{margin:"auto", width:"60%"}}
+    initial={{ opacity: 0, translateY: 50 }}
+    animate={{ opacity: 1, translateY: 0 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.3 }}>
       <Typography variant="h4" gutterBottom>
         Analytics Dashboard
       </Typography>
@@ -249,7 +254,7 @@ const AnalyticsPage = () => {
           </Box>
         </Grid>
       </Grid>
-    </div>
+    </motion.div>
   );
 };
 
