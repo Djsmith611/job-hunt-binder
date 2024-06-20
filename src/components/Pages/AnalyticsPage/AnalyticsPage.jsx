@@ -56,7 +56,12 @@ const AnalyticsPage = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
         <CircularProgress />
       </Box>
     );
@@ -89,33 +94,37 @@ const AnalyticsPage = () => {
       },
       point: {
         radius: 5,
-        backgroundColor: 'rgba(75, 192, 192, 1)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: "rgba(75, 192, 192, 1)",
+        borderColor: "rgba(75, 192, 192, 1)",
       },
     },
   };
 
   return (
-    <motion.div className="container" style={{margin:"auto", width:"60%"}}
-    initial={{ opacity: 0, translateY: 50 }}
-    animate={{ opacity: 1, translateY: 0 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.3 }}>
-      <Typography variant="h4" gutterBottom>
+    <motion.div
+      className="container"
+      style={{ margin: "auto", width: "60%", fontFamily: "monospace" }}
+      initial={{ opacity: 0, translateY: 50 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Typography variant="h4" sx={{marginBottom:"30px"}} gutterBottom>
         Analytics Dashboard
       </Typography>
-      
       <Grid container spacing={2}>
-      <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} sx={{borderRight:"1px solid", borderBottom:"1px solid"}}>
           <Box>
             <Typography variant="h6">Applications Per Day</Typography>
             <Line
               data={{
-                labels: data.applicationsPerDay.map((entry) => entry.day),
+                labels: data.applicationsPerDay.map((entry) => entry.date),
                 datasets: [
                   {
                     label: "Applications",
-                    data: data.applicationsPerDay.map((entry) => entry.applications),
+                    data: data.applicationsPerDay.map(
+                      (entry) => entry.applications
+                    ),
                     backgroundColor: "rgba(75, 192, 192, 0.2)",
                     borderColor: "rgba(75, 192, 192, 1)",
                     borderWidth: 1,
@@ -129,16 +138,16 @@ const AnalyticsPage = () => {
                 plugins: {
                   ...commonOptions.plugins,
                   datalabels: {
-                    anchor: 'end',
-                    align: 'end',
+                    anchor: "end",
+                    align: "end",
                     formatter: (value) => value,
-                    color: 'black',
-                    backgroundColor: 'white',
+                    color: "black",
+                    backgroundColor: "white",
                     borderRadius: 3,
                     padding: 5,
                     font: {
                       size: 16,
-                      weight: 'bold',
+                      weight: "bold",
                     },
                   },
                 },
@@ -149,8 +158,8 @@ const AnalyticsPage = () => {
                   },
                   point: {
                     radius: 5,
-                    backgroundColor: 'rgba(75, 192, 192, 1)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: "rgba(75, 192, 192, 1)",
+                    borderColor: "rgba(75, 192, 192, 1)",
                     hoverRadius: 7,
                   },
                 },
@@ -158,8 +167,7 @@ const AnalyticsPage = () => {
             />
           </Box>
         </Grid>
-
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} sx={{borderBottom:"1px solid", borderLeft:"1px solid"}}>
           <Box>
             <Typography variant="h6">Applications by Status</Typography>
             <Bar
@@ -180,13 +188,13 @@ const AnalyticsPage = () => {
                 plugins: {
                   ...commonOptions.plugins,
                   datalabels: {
-                    anchor: 'center',
-                    align: 'center',
+                    anchor: "center",
+                    align: "center",
                     formatter: (value) => value,
-                    color: 'black',
+                    color: "black",
                     font: {
                       size: 16,
-                      weight: 'bold',
+                      weight: "bold",
                     },
                   },
                 },
@@ -194,8 +202,7 @@ const AnalyticsPage = () => {
             />
           </Box>
         </Grid>
-
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} sx={{borderTop:"1px solid", borderRight:"1px solid"}}>
           <Box>
             <Typography variant="h6">Applications by Type</Typography>
             <Pie
@@ -236,10 +243,10 @@ const AnalyticsPage = () => {
                   },
                   datalabels: {
                     formatter: (value) => value,
-                    color: 'black',
+                    color: "black",
                     font: {
                       size: 16,
-                      weight: 'bold',
+                      weight: "bold",
                     },
                   },
                 },
@@ -247,11 +254,8 @@ const AnalyticsPage = () => {
             />
           </Box>
         </Grid>
-
-        <Grid item xs={12} md={6}>
-          <Box>
+        <Grid item xs={12} md={6} sx={{borderLeft:"1px solid", borderTop:"1px solid"}}>
             <JobHuntFunnel />
-          </Box>
         </Grid>
       </Grid>
     </motion.div>

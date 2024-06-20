@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { Typography, Box } from "@mui/material";
 
 ChartJS.register(
   CategoryScale,
@@ -101,12 +102,23 @@ export default function JobHuntFunnel() {
         },
       },
     },
+    elements: {
+      line: {
+        borderWidth: 2,
+        tension: 0.3,
+      },
+      point: {
+        radius: 5,
+        backgroundColor: 'rgba(75, 192, 192, 1)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+      },
+    },
   };
 
   return (
-    <div>
-      <h3>Job Hunt Funnel</h3>
+    <Box>
+      <Typography variant="h6" >Job Hunt Funnel</Typography>
       <Bar data={data} options={options} />
-    </div>
+    </Box>
   );
 }

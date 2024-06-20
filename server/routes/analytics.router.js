@@ -11,11 +11,11 @@ router.get("/", rejectUnauthenticated, async (req, res) => {
   try {
     // Fetch applications per day
     const applicationsPerDayQuery = `
-      SELECT to_char("app_date", 'Day') AS "day", COUNT(*) AS "applications"
+      SELECT to_char("app_date", 'YYYY-MM-DD') AS "date", COUNT(*) AS "applications"
       FROM "leads"
       WHERE "user_id" = $1
-      GROUP BY to_char("app_date", 'Day'), to_char("app_date", 'D')
-      ORDER BY to_char("app_date", 'D');
+      GROUP BY to_char("app_date", 'YYYY-MM-DD')
+      ORDER BY to_char("app_date", 'YYYY-MM-DD');
     `;
     const applicationsPerDayResult = await pool.query(applicationsPerDayQuery, [userId]);
     const applicationsPerDay = applicationsPerDayResult.rows;

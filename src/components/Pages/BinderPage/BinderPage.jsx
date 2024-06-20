@@ -95,7 +95,7 @@ export default function BinderPage() {
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
 
   const initialRowState = {
     status: "",
@@ -265,7 +265,7 @@ export default function BinderPage() {
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.3 }}>
-      <Paper sx={{  backgroundColor:"#e9f1f1", boxShadow:"1px 1px 15px rgba(0, 0, 0, 0.229)", borderRadius:"15px" }}>
+      <Paper sx={{  backgroundColor:"#ffffff", boxShadow:"1px 1px 15px rgba(0, 0, 0, 0.229)", borderRadius:"15px" }}>
         <EnhancedTableToolbar
           numSelected={selected.length}
           handleBatchStatusChange={handleBatchStatusChange}

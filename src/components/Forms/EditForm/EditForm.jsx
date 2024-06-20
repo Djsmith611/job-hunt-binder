@@ -86,6 +86,7 @@ export default function EditForm({ lead, closeEdit }) {
   };
 
   const handleClose = () => {
+    setDocument(null);
     closeEdit();
   };
 

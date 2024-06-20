@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import LogOutButton from "../../Util/Buttons/LogoutButton/LogoutButton";
 import "./Nav.css";
 import { useSelector } from "react-redux";
-import { Divider, Box } from "@mui/material";
+import { IconButton } from "@mui/material";
 
 export default function Nav() {
   const user = useSelector((state) => state.user);
@@ -71,6 +71,13 @@ export default function Nav() {
           Resources
         </Link>
       </div>{" "}
+      {
+        user.id && (
+          <IconButton>
+            
+          </IconButton>
+        )
+      }
       {!user.id && (
         <div className="sign-in">
           <Link className="signinLink1" to="/login">
